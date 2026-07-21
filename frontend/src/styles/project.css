@@ -1,0 +1,77 @@
+.project-board{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0, 1fr));
+    gap:22px;
+    margin-top:25px;
+    width:100%;
+    align-items:start;
+}
+
+.kanban-column{
+    width:100%;
+    min-width:0;
+    background:#ffffff;
+    border-radius:18px;
+    padding:18px;
+    min-height:600px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s;
+    box-sizing:border-box;
+    overflow-wrap:break-word;
+}
+
+.kanban-column:hover{
+    transform:translateY(-3px);
+}
+
+.column-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+    padding-bottom:12px;
+    border-bottom:2px solid #f1f5f9;
+}
+
+.column-title{
+    font-size:18px;
+    font-weight:700;
+}
+
+.column-count{
+    background:#eef2ff;
+    color:#4f46e5;
+    border-radius:20px;
+    padding:4px 10px;
+    font-weight:bold;
+    min-width:30px;
+    text-align:center;
+}
+
+.todo{
+    border-top:5px solid #3b82f6;
+}
+
+.progress{
+    border-top:5px solid #f59e0b;
+}
+
+.review{
+    border-top:5px solid #8b5cf6;
+}
+
+.done{
+    border-top:5px solid #10b981;
+}
+
+@media (max-width:1200px){
+    .project-board{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:768px){
+    .project-board{
+        grid-template-columns:1fr;
+    }
+}

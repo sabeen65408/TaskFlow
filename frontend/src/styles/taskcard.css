@@ -1,0 +1,143 @@
+.task-card{
+
+    background:white;
+
+    border-radius:14px;
+
+    padding:16px;
+
+    box-shadow:0 6px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+    cursor:pointer;
+
+}
+
+.task-card:hover{
+
+    transform:translateY(-5px);
+
+    box-shadow:0 12px 25px rgba(0,0,0,.12);
+
+}
+
+.task-title{
+
+    font-size:18px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.task-desc{
+
+    color:#6b7280;
+
+    font-size:14px;
+
+    margin-bottom:15px;
+
+}
+
+.task-footer{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:15px;
+
+}
+
+.priority{
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+}
+
+.low{
+
+    background:#10b981;
+
+}
+
+.medium{
+
+    background:#f59e0b;
+
+}
+
+.high{
+
+    background:#ef4444;
+
+}
+
+.user{
+
+    font-size:13px;
+
+    color:#374151;
+
+}
+
+.date{
+
+    color:#6b7280;
+
+    font-size:12px;
+
+}
+
+.task-buttons{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
+.task-buttons button{
+
+    border:none;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.edit{
+
+    background:#4f46e5;
+
+    color:white;
+
+}
+
+.delete{
+
+    background:#ef4444;
+
+    color:white;
+
+}
