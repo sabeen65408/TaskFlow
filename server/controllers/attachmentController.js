@@ -2,35 +2,45 @@ const Attachment=require("../models/Attachment");
 const fs = require("fs");
 const path = require("path");
 
-const uploadAttachment=async(req,res)=>{
+const uploadAttachment = async (req, res) => {
 
-try{
+    try {
 
-const attachment=await Attachment.create({
+        console.log("========== UPLOAD REQUEST ==========");
+        console.log("req.user:", req.user);
+        console.log("req.body:", req.body);
+        console.log("req.file:", req.file);
 
-task:req.body.task,
+        if (!req.file) {
+            return res.status(400).json({
+                message: "No file received"
+            });
+        }
 
-uploadedBy:req.user._id,
+        const attachment = await Attachment.create({
 
-fileName:req.file.originalname,
+            task: req.body.task,
 
-fileUrl:req.file.filename
+            uploadedBy: req.user.id,
 
-});
+            fileName: req.file.originalname,
 
-res.status(201).json(attachment);
+            fileUrl: req.file.filename
 
-}
+        });
 
-catch(err){
+        res.status(201).json(attachment);
 
-res.status(500).json({
+    } catch (err) {
 
-message:err.message
+        console.log("UPLOAD ERROR:");
+        console.log(err);
 
-});
+        res.status(500).json({
+            message: err.message
+        });
 
-}
+    }
 
 };
 

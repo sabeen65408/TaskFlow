@@ -6,7 +6,7 @@ import DashboardCharts from "../components/DashboardCharts";
 import RecentActivity from "../components/RecentActivity";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
 import TeamMembers from "../components/TeamMembers";
-import QuickActions from "../components/QuickActions";
+
 
 import { getAllTasks } from "../services/taskService";
 
@@ -142,7 +142,7 @@ loadDashboard();
 
           <TeamMembers tasks={tasks} />
 
-          <QuickActions />
+          
         </div>
 
         {/* Create Project */}

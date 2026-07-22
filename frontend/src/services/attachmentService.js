@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/attachments";
+const API =
+"https://taskflow-backend-2z7h.onrender.com/api/attachments";
 
 const getToken = () => localStorage.getItem("token");
 

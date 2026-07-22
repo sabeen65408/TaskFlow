@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:5000/api/tasks";
+const API = `${import.meta.env.VITE_API_URL}/tasks`;
 
 const getToken = () => localStorage.getItem("token");
 
