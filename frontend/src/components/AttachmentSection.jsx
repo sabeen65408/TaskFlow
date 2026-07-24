@@ -218,7 +218,7 @@ gap:"15px"
 
 <a
 
-href={`http://localhost:5000/uploads/${file.fileUrl}`}
+href={`${import.meta.env.VITE_API_URL.replace("/api","")}/uploads/${file.filename}`}
 
 target="_blank"
 

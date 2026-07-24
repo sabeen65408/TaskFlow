@@ -34,7 +34,7 @@ function MainLayout() {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          "http://localhost:5000/api/settings/profile",
+          `${import.meta.env.VITE_API_URL}/settings/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
