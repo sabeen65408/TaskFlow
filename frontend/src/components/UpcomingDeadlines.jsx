@@ -1,10 +1,12 @@
+import { FiCalendar } from "react-icons/fi";
+
 function UpcomingDeadlines({ tasks }) {
 
   const upcoming = [...tasks]
     .filter(task => task.dueDate)
     .sort(
       (a,b)=>
-        new Date(a.dueDate)-
+        new Date(a.dueDate) -
         new Date(b.dueDate)
     )
     .slice(0,5);
@@ -13,41 +15,54 @@ function UpcomingDeadlines({ tasks }) {
 
     <div className="dashboard-card">
 
-      <h3>📅 Upcoming Deadlines</h3>
+      <h2 className="dashboard-heading">
 
-      {
+        <FiCalendar />
 
-      upcoming.length===0 ?
+        Upcoming Deadlines
 
-      <p>No deadlines</p>
+      </h2>
 
-      :
+      <div className="dashboard-content">
 
-      upcoming.map(task=>(
+        {
 
-      <div
-      key={task._id}
-      style={{
-      padding:"12px 0",
-      borderBottom:"1px solid #eee"
-      }}
-      >
+          upcoming.length === 0 ?
 
-      <strong>{task.title}</strong>
+          <p className="dashboard-empty">
 
-      <br/>
+            No deadlines.
 
-      <small>
+          </p>
 
-      {new Date(task.dueDate).toLocaleDateString()}
+          :
 
-      </small>
+          upcoming.map(task => (
+
+            <div
+              key={task._id}
+              className="dashboard-row"
+            >
+
+              <strong>
+
+                {task.title}
+
+              </strong>
+
+              <small>
+
+                {new Date(task.dueDate).toLocaleDateString()}
+
+              </small>
+
+            </div>
+
+          ))
+
+        }
 
       </div>
-
-      ))
-
-      }
 
     </div>
 

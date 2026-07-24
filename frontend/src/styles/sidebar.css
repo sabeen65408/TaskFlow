@@ -1,60 +1,106 @@
-/* ======================================================
-   TASKFLOW SIDEBAR
-====================================================== */
+/* ===================================================
+   TASKFLOW LAYOUT
+=================================================== */
+
+.layout{
+    display:flex;
+    min-height:100vh;
+    background:var(--bg);
+}
+
+/* ===================================================
+   SIDEBAR
+=================================================== */
 
 .sidebar{
 
-    width:260px;
-
-    height:100vh;
-
     position:fixed;
-
     top:0;
-
     left:0;
 
-    display:flex;
-
-    flex-direction:column;
-
-    padding:28px 20px;
+    width:260px;
+    height:100vh;
 
     background:var(--sidebar);
 
     color:var(--sidebar-text);
 
-    transition:.35s;
+    display:flex;
+    flex-direction:column;
+
+    padding:28px 18px;
 
     border-right:1px solid var(--border);
 
+    transition:.35s ease;
+
+    z-index:1000;
+
 }
 
-/* ======================================================
-   LOGO
-====================================================== */
+/* ===================================================
+   SIDEBAR TOP
+=================================================== */
 
-.logo{
+.sidebar-top{
 
-    font-size:30px;
-
-    font-weight:700;
-
-    text-align:center;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
 
     margin-bottom:45px;
 
-    color:var(--sidebar-text);
+}
 
-    letter-spacing:.5px;
+/* ===================================================
+   LOGO
+=================================================== */
+
+.logo{
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    font-size:28px;
+    font-weight:700;
+
+    color:white;
 
     user-select:none;
 
 }
 
-/* ======================================================
+.logo span{
+
+    white-space:nowrap;
+
+}
+
+/* ===================================================
+   CLOSE BUTTON
+=================================================== */
+
+.close-btn{
+
+    display:none;
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    cursor:pointer;
+
+    font-size:28px;
+
+}
+
+/* ===================================================
    MENU
-====================================================== */
+=================================================== */
 
 .menu{
 
@@ -66,9 +112,9 @@
 
 }
 
-/* ======================================================
-   MENU LINK
-====================================================== */
+/* ===================================================
+   MENU LINKS
+=================================================== */
 
 .menu a{
 
@@ -80,41 +126,31 @@
 
     padding:15px 18px;
 
-    border-radius:14px;
-
     color:var(--sidebar-text);
 
     text-decoration:none;
+
+    border-radius:14px;
 
     font-size:16px;
 
     font-weight:500;
 
-    transition:
-
-        background .3s,
-
-        transform .2s,
-
-        color .3s;
+    transition:.3s;
 
 }
-
-/* ======================================================
-   ICON
-====================================================== */
 
 .menu a svg{
 
     font-size:20px;
 
-    flex-shrink:0;
+    min-width:20px;
 
 }
 
-/* ======================================================
+/* ===================================================
    HOVER
-====================================================== */
+=================================================== */
 
 .menu a:hover{
 
@@ -124,25 +160,25 @@
 
 }
 
-/* ======================================================
-   ACTIVE MENU
-====================================================== */
+/* ===================================================
+   ACTIVE
+=================================================== */
 
 .menu .active{
 
     background:var(--sidebar-active);
 
-    color:#fff;
+    color:white;
 
     box-shadow:
 
-        0 10px 20px rgba(99,102,241,.35);
+        0 12px 25px rgba(99,102,241,.35);
 
 }
 
-/* ======================================================
-   BOTTOM AREA
-====================================================== */
+/* ===================================================
+   BOTTOM
+=================================================== */
 
 .bottom{
 
@@ -154,17 +190,17 @@
 
     align-items:center;
 
-    gap:20px;
+    gap:22px;
 
 }
 
-/* ======================================================
+/* ===================================================
    NOTIFICATION
-====================================================== */
+=================================================== */
 
 .bottom svg{
 
-    color:var(--sidebar-text);
+    color:white;
 
     transition:.3s;
 
@@ -176,9 +212,9 @@
 
 }
 
-/* ======================================================
-   LOGOUT BUTTON
-====================================================== */
+/* ===================================================
+   LOGOUT
+=================================================== */
 
 .logout{
 
@@ -202,9 +238,9 @@
 
     display:flex;
 
-    align-items:center;
-
     justify-content:center;
+
+    align-items:center;
 
     gap:10px;
 
@@ -218,10 +254,6 @@
 
     transform:translateY(-2px);
 
-    box-shadow:
-
-        0 12px 25px rgba(239,68,68,.30);
-
 }
 
 .logout svg{
@@ -230,87 +262,291 @@
 
 }
 
-/* ======================================================
+/* ===================================================
+   MAIN CONTENT
+=================================================== */
+
+.main-content{
+
+    flex:1;
+
+    margin-left:260px;
+
+    padding:30px;
+
+    transition:.35s;
+
+    overflow-x:hidden;
+
+}
+
+/* ===================================================
+   MOBILE HEADER
+=================================================== */
+
+.mobile-header{
+
+    display:none;
+
+}
+
+/* ===================================================
+   MENU BUTTON
+=================================================== */
+
+.menu-btn{
+
+    display:none;
+
+}
+
+/* ===================================================
+   SIDEBAR OVERLAY
+=================================================== */
+
+.sidebar-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    z-index:999;
+    animation:fadeIn .25s ease;
+}
+
+/* ===================================================
    DARK MODE
-====================================================== */
+=================================================== */
 
 body.dark .sidebar{
-
     background:var(--sidebar);
-
     border-right:1px solid var(--border);
-
 }
 
 body.dark .menu a{
-
     color:var(--sidebar-text);
-
 }
 
 body.dark .menu a:hover{
-
     background:var(--sidebar-hover);
-
 }
 
 body.dark .menu .active{
-
     background:var(--sidebar-active);
-
 }
 
 body.dark .logout{
-
     background:var(--danger);
-
 }
 
 body.dark .logout:hover{
-
     background:var(--danger-hover);
+}
+
+body.dark .mobile-header{
+    background:var(--sidebar);
+    border-bottom:1px solid var(--border);
+}
+
+body.dark .menu-btn,
+body.dark .close-btn{
+    color:white;
+}
+
+/* ===================================================
+   TABLET
+=================================================== */
+
+@media (max-width:1024px){
+
+    .sidebar{
+        width:220px;
+    }
+
+    .main-content{
+        margin-left:220px;
+        padding:24px;
+    }
 
 }
 
-/* ======================================================
-   SCROLL
-====================================================== */
+/* ===================================================
+   MOBILE
+=================================================== */
 
-.sidebar::-webkit-scrollbar{
+@media (max-width:768px){
 
-    width:6px;
+    .layout{
+        display:block;
+    }
 
-}
+    /* ---------- Header ---------- */
 
-.sidebar::-webkit-scrollbar-thumb{
+    .mobile-header{
 
-    background:rgba(255,255,255,.18);
+        display:flex;
 
-    border-radius:20px;
+        align-items:center;
 
-}
+        justify-content:space-between;
 
-/* ======================================================
-   RESPONSIVE
-====================================================== */
+        position:sticky;
 
-@media(max-width:900px){
+        top:0;
+
+        z-index:900;
+
+        height:65px;
+
+        padding:0 18px;
+
+        background:var(--sidebar);
+
+        color:white;
+
+        box-shadow:0 4px 12px rgba(0,0,0,.15);
+
+    }
+
+    .mobile-header h2{
+
+        margin:0;
+
+        font-size:22px;
+
+        font-weight:700;
+
+    }
+
+    .menu-btn{
+
+        display:flex;
+
+        align-items:center;
+
+        justify-content:center;
+
+        width:42px;
+
+        height:42px;
+
+        border:none;
+
+        background:none;
+
+        color:white;
+
+        cursor:pointer;
+
+        font-size:28px;
+
+    }
+
+    /* ---------- Sidebar ---------- */
 
     .sidebar{
 
-        width:220px;
+        width:260px;
+
+        left:-270px;
+
+        top:0;
+
+        transition:left .35s ease;
+
+        box-shadow:8px 0 30px rgba(0,0,0,.25);
+
+    }
+
+    .sidebar.open{
+
+        left:0;
+
+    }
+
+    .close-btn{
+
+        display:block;
+
+    }
+
+    .sidebar-top{
+
+        margin-bottom:35px;
+
+    }
+
+    .logo{
+
+        font-size:26px;
+
+    }
+
+    .menu{
+
+        gap:8px;
+
+    }
+
+    .menu a{
+
+        padding:15px;
+
+        font-size:15px;
+
+    }
+
+    .logout{
+
+        height:50px;
+
+        font-size:15px;
+
+    }
+
+    /* ---------- Main ---------- */
+
+    .main-content{
+
+        margin-left:0;
+
+        width:100%;
+
+        padding:18px;
 
     }
 
 }
 
-@media(max-width:768px){
+/* ===================================================
+   SMALL MOBILE
+=================================================== */
+
+@media (max-width:480px){
+
+    .mobile-header{
+
+        padding:0 14px;
+
+        height:60px;
+
+    }
+
+    .mobile-header h2{
+
+        font-size:20px;
+
+    }
 
     .sidebar{
 
-        width:75px;
+        width:240px;
 
-        padding:20px 10px;
+        left:-250px;
+
+    }
+
+    .sidebar.open{
+
+        left:0;
 
     }
 
@@ -318,38 +554,49 @@ body.dark .logout:hover{
 
         font-size:24px;
 
-        margin-bottom:35px;
-
     }
 
     .menu a{
 
-        justify-content:center;
-
-        padding:15px;
-
-    }
-
-    .menu a span{
-
-        display:none;
-
-    }
-
-    .logout{
-
-        font-size:0;
+        font-size:14px;
 
         padding:14px;
 
     }
 
-    .logout svg{
+    .main-content{
 
-        font-size:22px;
+        padding:14px;
 
-        margin:0;
+    }
 
+}
+
+/* ===================================================
+   SCROLLBAR
+=================================================== */
+
+.sidebar::-webkit-scrollbar{
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+    background:rgba(255,255,255,.18);
+    border-radius:20px;
+}
+
+/* ===================================================
+   ANIMATIONS
+=================================================== */
+
+@keyframes fadeIn{
+
+    from{
+        opacity:0;
+    }
+
+    to{
+        opacity:1;
     }
 
 }

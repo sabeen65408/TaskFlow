@@ -1,3 +1,5 @@
+import { FiEdit3 } from "react-icons/fi";
+
 function RecentActivity({ tasks }) {
 
   const recentTasks = [...tasks]
@@ -12,43 +14,54 @@ function RecentActivity({ tasks }) {
 
     <div className="dashboard-card">
 
-      <h3>📝 Recent Activity</h3>
+      <h2 className="dashboard-heading">
 
-      {recentTasks.length === 0 ? (
+        <FiEdit3 />
 
-        <p>No recent activity</p>
+        Recent Activity
 
-      ) : (
+      </h2>
 
-        recentTasks.map(task => (
+      <div className="dashboard-content">
 
-          <div
-            key={task._id}
-            style={{
-              padding:"12px 0",
-              borderBottom:"1px solid #eee"
-            }}
-          >
+        {
 
-            <strong>{task.title}</strong>
+          recentTasks.length === 0 ?
 
-            <br/>
+          <p className="dashboard-empty">
 
-            <small>
+            No recent activity.
 
-              Assigned to
+          </p>
 
-              {" "}
+          :
 
-              {task.assignedTo?.name || "Nobody"}
+          recentTasks.map(task => (
 
-            </small>
+            <div
+              key={task._id}
+              className="dashboard-row"
+            >
 
-          </div>
+              <strong>
 
-        ))
+                {task.title}
 
-      )}
+              </strong>
+
+              <small>
+
+                Assigned to {task.assignedTo?.name || "Nobody"}
+
+              </small>
+
+            </div>
+
+          ))
+
+        }
+
+      </div>
 
     </div>
 

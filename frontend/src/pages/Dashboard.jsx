@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import ProjectCard from "../components/ProjectCard";
-import "../styles/dashboard.css";
+import toast from "react-hot-toast";
 
+import ProjectCard from "../components/ProjectCard";
 import DashboardCharts from "../components/DashboardCharts";
 import RecentActivity from "../components/RecentActivity";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
 import TeamMembers from "../components/TeamMembers";
-
+import StatCard from "../components/StatCard";
 
 import { getAllTasks } from "../services/taskService";
-
-import toast from "react-hot-toast";
 
 import {
   getProjects,
@@ -19,7 +17,7 @@ import {
   getDashboardStats,
 } from "../services/projectService";
 
-import StatCard from "../components/StatCard";
+import "../styles/dashboard.css";
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);
@@ -51,28 +49,32 @@ function Dashboard() {
 
       const taskData = await getAllTasks();
       setTasks(taskData);
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to load dashboard");
     }
   };
 
   const handleCreateProject = async () => {
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      return toast.error("Project title is required");
+    }
 
     try {
       await createProject({
-    title,
-    description,
-});
+        title,
+        description,
+      });
 
-toast.success("Project Created");
+      toast.success("Project Created");
 
-setTitle("");
-setDescription("");
+      setTitle("");
+      setDescription("");
 
-loadDashboard();
-    } catch (error) {
-      console.log(error);
+      loadDashboard();
+    } catch (err) {
+      console.log(err);
+      toast.error("Unable to create project");
     }
   };
 
@@ -86,24 +88,39 @@ loadDashboard();
     try {
       await deleteProject(id);
 
-toast.success("Project Deleted");
+      toast.success("Project Deleted");
 
-loadDashboard();
-    } catch (error) {
-      console.log(error);
+      loadDashboard();
+    } catch (err) {
+      console.log(err);
+      toast.error("Unable to delete project");
     }
   };
 
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
-        <h1 className="dashboard-title">
-          📋 TaskFlow Dashboard
-        </h1>
 
-        {/* Stats */}
+        {/* Header */}
+
+        <div className="dashboard-header">
+
+          <div>
+            <h1 className="dashboard-title">
+              📋 TaskFlow Dashboard
+            </h1>
+
+            <p className="dashboard-subtitle">
+              Manage your projects and tasks efficiently.
+            </p>
+          </div>
+
+        </div>
+
+        {/* Statistics */}
 
         <div className="stats-grid">
+
           <StatCard
             title="Projects"
             value={stats.totalProjects}
@@ -127,124 +144,93 @@ loadDashboard();
             value={stats.pendingTasks}
             color="#ea580c"
           />
+
         </div>
 
         {/* Charts */}
 
         <DashboardCharts tasks={tasks} />
 
-        {/* Dashboard Widgets */}
+        {/* Widgets */}
 
         <div className="dashboard-widgets">
+
           <RecentActivity tasks={tasks} />
 
           <UpcomingDeadlines tasks={tasks} />
 
           <TeamMembers tasks={tasks} />
 
-          
         </div>
 
         {/* Create Project */}
 
         <div className="create-project-card">
+
+          <h2>Create New Project</h2>
+
           <input
+            className="dashboard-input"
             type="text"
             placeholder="🔍 Search Project..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "20px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-              fontSize: "15px",
-            }}
           />
 
-          <h2>Create Project</h2>
-
           <input
+            className="dashboard-input"
             type="text"
             placeholder="Project Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "12px",
-              marginBottom: "15px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-            }}
           />
 
           <textarea
+            className="dashboard-textarea"
             placeholder="Project Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{
-              width: "100%",
-              height: "120px",
-              padding: "12px",
-              borderRadius: "8px",
-              border: "1px solid #ddd",
-            }}
           />
 
           <button
+            className="dashboard-btn"
             onClick={handleCreateProject}
-            style={{
-              marginTop: "20px",
-              background: "#4f46e5",
-              color: "white",
-              border: "none",
-              padding: "12px 24px",
-              borderRadius: "8px",
-              cursor: "pointer",
-            }}
           >
-            Create Project
+            ➕ Create Project
           </button>
+
         </div>
 
         {/* Projects */}
 
-        <h2
-          style={{
-            marginTop: "40px",
-            marginBottom: "20px",
-          }}
-        >
-          My Projects
-        </h2>
+        <div className="projects-section">
 
-        {projects.length === 0 ? (
-          <p>No Projects Yet</p>
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fill,minmax(340px,1fr))",
-              gap: "20px",
-            }}
-          >
-            {projects
-              .filter((project) =>
-                project.title
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              )
-              .map((project) => (
-                <ProjectCard
-                  key={project._id}
-                  project={project}
-                  onDelete={handleDeleteProject}
-                />
-              ))}
-          </div>
-        )}
+          <h2>My Projects</h2>
+
+          {projects.length === 0 ? (
+            <div className="empty-projects">
+              No Projects Yet
+            </div>
+          ) : (
+            <div className="projects-grid">
+              {projects
+                .filter((project) =>
+                  project.title
+                    .toLowerCase()
+                    .includes(search.toLowerCase())
+                )
+                .map((project) => (
+                  <ProjectCard
+                    key={project._id}
+                    project={project}
+                    onDelete={handleDeleteProject}
+                  />
+                ))}
+            </div>
+          )}
+
+        </div>
+
       </div>
     </div>
   );

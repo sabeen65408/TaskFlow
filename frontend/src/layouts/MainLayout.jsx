@@ -1,82 +1,114 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { useEffect } from "react";
 import axios from "axios";
+
 import {
   FiHome,
   FiCalendar,
   FiSettings,
   FiLogOut,
+  FiUser,
+  FiMenu,
+  FiX,
 } from "react-icons/fi";
 
 import NotificationBell from "../components/NotificationBell";
 
 import "../styles/sidebar.css";
 
-import { FiUser } from "react-icons/fi";
-
 function MainLayout() {
-
   const navigate = useNavigate();
 
-  useEffect(() => {
-  const loadTheme = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-      const res = await axios.get(
-        "http://localhost:5000/api/settings/profile",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      document.body.classList.remove(
-        "light",
-        "dark"
-      );
-
-      document.body.classList.add(
-        res.data.theme || "light"
-      );
-
-    } catch (err) {
-      console.log(err);
+  const closeSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setSidebarOpen(false);
     }
   };
 
-  loadTheme();
-}, []);
+  useEffect(() => {
+    const loadTheme = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(
+          "http://localhost:5000/api/settings/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(res.data.theme || "light");
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    loadTheme();
+  }, []);
 
   const logout = () => {
-    document.body.classList.remove(
-  "light",
-  "dark"
-  );
+    document.body.classList.remove("light", "dark");
 
     localStorage.removeItem("token");
 
     toast.success("Logged Out");
 
     navigate("/");
-
   };
 
   return (
+    <div className="layout">
 
-    <div
-      style={{
-        display:"flex"
-      }}
-    >
+      {/* Mobile Topbar */}
 
-      <div className="sidebar">
+      <div className="mobile-header">
 
-        <div className="logo">
+        <button
+          className="menu-btn"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <FiMenu />
+        </button>
 
-          🚀 TaskFlow
+        <h2>🚀 TaskFlow</h2>
+
+      </div>
+
+      {/* Overlay */}
+
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
+      {/* Sidebar */}
+
+      <aside
+        className={`sidebar ${sidebarOpen ? "open" : ""}`}
+      >
+
+        <div className="sidebar-top">
+
+          <div className="logo">
+
+            🚀 <span>TaskFlow</span>
+
+          </div>
+
+          <button
+            className="close-btn"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <FiX />
+          </button>
 
         </div>
 
@@ -84,95 +116,76 @@ function MainLayout() {
 
           <NavLink
             to="/dashboard"
-            className={({isActive}) =>
+            onClick={closeSidebar}
+            className={({ isActive }) =>
               isActive ? "active" : ""
             }
           >
-            <FiHome/>
-
-            Dashboard
-
+            <FiHome />
+            <span>Dashboard</span>
           </NavLink>
 
           <NavLink
             to="/calendar"
-            className={({isActive}) =>
+            onClick={closeSidebar}
+            className={({ isActive }) =>
               isActive ? "active" : ""
             }
           >
-            <FiCalendar/>
-
-            Calendar
-
+            <FiCalendar />
+            <span>Calendar</span>
           </NavLink>
 
           <NavLink
             to="/settings"
-            className={({isActive}) =>
+            onClick={closeSidebar}
+            className={({ isActive }) =>
               isActive ? "active" : ""
             }
           >
-            <FiSettings/>
-
-            Settings
-
+            <FiSettings />
+            <span>Settings</span>
           </NavLink>
 
-            <NavLink
-                to="/profile"
-                className={({ isActive }) =>
-                    isActive ? "active" : ""
-                }
-            >
-                <FiUser />
-                Profile
-            </NavLink>
+          <NavLink
+            to="/profile"
+            onClick={closeSidebar}
+            className={({ isActive }) =>
+              isActive ? "active" : ""
+            }
+          >
+            <FiUser />
+            <span>Profile</span>
+          </NavLink>
 
         </div>
 
         <div className="bottom">
 
-          <div
-            style={{
-              marginBottom:20,
-              display:"flex",
-              justifyContent:"center"
-            }}
-          >
-            <NotificationBell/>
-          </div>
+          <NotificationBell />
 
           <button
             className="logout"
             onClick={logout}
           >
-
-            <FiLogOut/>
-
-            Logout
-
+            <FiLogOut />
+            <span>Logout</span>
           </button>
 
         </div>
 
-      </div>
+      </aside>
 
-      <div
-        style={{
-          marginLeft:"260px",
-          width:"100%",
-          padding:"20px"
-        }}
-      >
+      {/* Main Content */}
 
-        <Outlet/>
+      <main className="main-content">
 
-      </div>
+        <Outlet />
+
+      </main>
 
     </div>
-
   );
-
 }
 
 export default MainLayout;
