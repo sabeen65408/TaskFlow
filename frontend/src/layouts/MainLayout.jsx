@@ -67,133 +67,129 @@ navigate("/", {
   };
 
   return (
-    <div className="layout">
+  <div className="layout">
 
-      {/* Mobile Topbar */}
+    {sidebarOpen && (
+      <div
+        className="sidebar-overlay"
+        onClick={() => setSidebarOpen(false)}
+      />
+    )}
+
+    <aside
+      className={`sidebar ${sidebarOpen ? "open" : ""}`}
+    >
+
+      <div className="sidebar-top">
+
+        <div className="logo">
+          🚀 <span>TaskFlow</span>
+        </div>
+
+        <button
+          className="close-btn"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <FiX />
+        </button>
+
+      </div>
+
+      <div className="menu">
+
+        {/* Dashboard */}
+        <NavLink
+          to="/dashboard"
+          onClick={closeSidebar}
+          className={({ isActive }) =>
+            isActive ? "active" : ""
+          }
+        >
+          <FiHome />
+          <span>Dashboard</span>
+        </NavLink>
+
+        {/* Calendar */}
+        <NavLink
+          to="/calendar"
+          onClick={closeSidebar}
+          className={({ isActive }) =>
+            isActive ? "active" : ""
+          }
+        >
+          <FiCalendar />
+          <span>Calendar</span>
+        </NavLink>
+
+        {/* Settings */}
+        <NavLink
+          to="/settings"
+          onClick={closeSidebar}
+          className={({ isActive }) =>
+            isActive ? "active" : ""
+          }
+        >
+          <FiSettings />
+          <span>Settings</span>
+        </NavLink>
+
+        {/* Profile */}
+        <NavLink
+          to="/profile"
+          onClick={closeSidebar}
+          className={({ isActive }) =>
+            isActive ? "active" : ""
+          }
+        >
+          <FiUser />
+          <span>Profile</span>
+        </NavLink>
+
+      </div>
+
+      <div className="bottom">
+
+        <NotificationBell />
+
+        <button
+          className="logout"
+          onClick={logout}
+        >
+          <FiLogOut />
+          <span>Logout</span>
+        </button>
+
+      </div>
+
+    </aside>
+
+    <main className="main-content">
+
+      {/* Mobile Header */}
 
       <div className="mobile-header">
 
-  <button
-    className="menu-btn"
-    onClick={() => setSidebarOpen(true)}
-  >
-    <FiMenu />
-  </button>
+        <button
+          className="menu-btn"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <FiMenu />
+        </button>
 
-  <h2>
-    🚀 TaskFlow
-  </h2>
+        <h2>
+          🚀 TaskFlow
+        </h2>
 
-  <div className="mobile-space"></div>
+        <div className="mobile-space"></div>
 
-</div>
+      </div>
 
-      {/* Overlay */}
+      <Outlet />
 
-      {sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
+    </main>
 
-      {/* Sidebar */}
-
-      <aside
-        className={`sidebar ${sidebarOpen ? "open" : ""}`}
-      >
-
-        <div className="sidebar-top">
-
-          <div className="logo">
-
-            🚀 <span>TaskFlow</span>
-
-          </div>
-
-          <button
-            className="close-btn"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <FiX />
-          </button>
-
-        </div>
-
-        <div className="menu">
-
-          <NavLink
-            to="/dashboard"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <FiHome />
-            <span>Dashboard</span>
-          </NavLink>
-
-          <NavLink
-            to="/calendar"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <FiCalendar />
-            <span>Calendar</span>
-          </NavLink>
-
-          <NavLink
-            to="/settings"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <FiSettings />
-            <span>Settings</span>
-          </NavLink>
-
-          <NavLink
-            to="/profile"
-            onClick={closeSidebar}
-            className={({ isActive }) =>
-              isActive ? "active" : ""
-            }
-          >
-            <FiUser />
-            <span>Profile</span>
-          </NavLink>
-
-        </div>
-
-        <div className="bottom">
-
-          <NotificationBell />
-
-          <button
-            className="logout"
-            onClick={logout}
-          >
-            <FiLogOut />
-            <span>Logout</span>
-          </button>
-
-        </div>
-
-      </aside>
-
-      {/* Main Content */}
-
-      <main className="main-content">
-
-        <Outlet />
-
-      </main>
-
-    </div>
-  );
+  </div>
+);
 }
 
 export default MainLayout;
