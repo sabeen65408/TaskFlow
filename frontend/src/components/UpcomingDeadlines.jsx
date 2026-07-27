@@ -3,13 +3,19 @@ import { FiCalendar } from "react-icons/fi";
 function UpcomingDeadlines({ tasks }) {
 
   const upcoming = [...tasks]
+
+    // Only tasks having due date
     .filter(task => task.dueDate)
+
+    // Ignore completed tasks (optional but recommended)
+    .filter(task => task.column !== "Done")
+
+    // Nearest date first
     .sort(
-      (a,b)=>
+      (a, b) =>
         new Date(a.dueDate) -
         new Date(b.dueDate)
-    )
-    .slice(0,5);
+    );
 
   return (
 
@@ -23,7 +29,13 @@ function UpcomingDeadlines({ tasks }) {
 
       </h2>
 
-      <div className="dashboard-content">
+      <div
+        className="dashboard-content"
+        style={{
+          maxHeight: "420px",
+          overflowY: "auto"
+        }}
+      >
 
         {
 
@@ -31,7 +43,7 @@ function UpcomingDeadlines({ tasks }) {
 
           <p className="dashboard-empty">
 
-            No deadlines.
+            No upcoming deadlines.
 
           </p>
 
@@ -46,13 +58,30 @@ function UpcomingDeadlines({ tasks }) {
 
               <strong>
 
-                {task.title}
+                📁 {task.project?.title || "Project"}
 
               </strong>
 
               <small>
 
-                {new Date(task.dueDate).toLocaleDateString()}
+                ✅ Task :
+                {" "}
+                {task.title}
+
+              </small>
+
+              <small>
+
+                📅 Due :
+                {" "}
+                {new Date(task.dueDate).toLocaleDateString(
+                  "en-GB",
+                  {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric"
+                  }
+                )}
 
               </small>
 

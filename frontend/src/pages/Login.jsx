@@ -26,8 +26,11 @@ function Login() {
             console.log("Login Response:", data);
 
             localStorage.setItem("token", data.token);
-            toast.success("Login Successful 🎉");
-            navigate("/dashboard");
+            window.dispatchEvent(new Event("authChanged"));
+
+toast.success("Login Successful 🎉");
+
+navigate("/dashboard", { replace: true });
 
         } catch (error) {
 
@@ -57,10 +60,31 @@ function Login() {
         />
 
         <input
-          type="password"
-          placeholder="Password"
-          onChange={(e)=>setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
         />
+
+        <div
+  style={{
+    textAlign:"right",
+    marginBottom:"18px"
+  }}
+>
+  <Link
+    to="/forgot-password"
+    style={{
+      color:"#4f46e5",
+      textDecoration:"none",
+      fontSize:"14px",
+      fontWeight:"500"
+    }}
+  >
+    Forgot Password?
+  </Link>
+</div>
 
         <button>
           Login

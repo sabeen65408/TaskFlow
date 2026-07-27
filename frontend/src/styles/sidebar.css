@@ -1,5 +1,5 @@
 /* ===================================================
-   TASKFLOW LAYOUT
+   LAYOUT
 =================================================== */
 
 .layout{
@@ -13,7 +13,6 @@
 =================================================== */
 
 .sidebar{
-
     position:fixed;
     top:0;
     left:0;
@@ -22,7 +21,6 @@
     height:100vh;
 
     background:var(--sidebar);
-
     color:var(--sidebar-text);
 
     display:flex;
@@ -32,70 +30,39 @@
 
     border-right:1px solid var(--border);
 
-    transition:.35s ease;
+    transition:left .35s ease;
 
     z-index:1000;
-
 }
-
-/* ===================================================
-   SIDEBAR TOP
-=================================================== */
 
 .sidebar-top{
-
     display:flex;
-    align-items:center;
     justify-content:space-between;
-
-    margin-bottom:45px;
-
+    align-items:center;
+    margin-bottom:40px;
 }
 
-/* ===================================================
-   LOGO
-=================================================== */
-
 .logo{
-
     display:flex;
     align-items:center;
-
     gap:10px;
 
     font-size:28px;
     font-weight:700;
-
     color:white;
-
-    user-select:none;
-
 }
 
 .logo span{
-
     white-space:nowrap;
-
 }
 
-/* ===================================================
-   CLOSE BUTTON
-=================================================== */
-
 .close-btn{
-
     display:none;
-
     background:none;
-
     border:none;
-
     color:white;
-
     cursor:pointer;
-
     font-size:28px;
-
 }
 
 /* ===================================================
@@ -103,77 +70,35 @@
 =================================================== */
 
 .menu{
-
     display:flex;
-
     flex-direction:column;
-
     gap:10px;
-
 }
 
-/* ===================================================
-   MENU LINKS
-=================================================== */
-
 .menu a{
-
     display:flex;
-
     align-items:center;
-
     gap:14px;
 
     padding:15px 18px;
 
     color:var(--sidebar-text);
-
     text-decoration:none;
 
     border-radius:14px;
 
-    font-size:16px;
-
-    font-weight:500;
-
     transition:.3s;
-
 }
-
-.menu a svg{
-
-    font-size:20px;
-
-    min-width:20px;
-
-}
-
-/* ===================================================
-   HOVER
-=================================================== */
 
 .menu a:hover{
-
     background:var(--sidebar-hover);
-
     transform:translateX(4px);
-
 }
 
-/* ===================================================
-   ACTIVE
-=================================================== */
-
 .menu .active{
-
     background:var(--sidebar-active);
-
     color:white;
-
-    box-shadow:
-
-        0 12px 25px rgba(99,102,241,.35);
-
+    box-shadow:0 10px 25px rgba(79,70,229,.35);
 }
 
 /* ===================================================
@@ -181,85 +106,38 @@
 =================================================== */
 
 .bottom{
-
     margin-top:auto;
 
     display:flex;
-
     flex-direction:column;
-
-    align-items:center;
-
     gap:22px;
-
 }
-
-/* ===================================================
-   NOTIFICATION
-=================================================== */
-
-.bottom svg{
-
-    color:white;
-
-    transition:.3s;
-
-}
-
-.bottom svg:hover{
-
-    transform:scale(1.12);
-
-}
-
-/* ===================================================
-   LOGOUT
-=================================================== */
 
 .logout{
-
     width:100%;
-
-    height:54px;
+    height:52px;
 
     border:none;
-
     border-radius:14px;
 
     background:var(--danger);
 
     color:white;
-
     font-size:16px;
-
     font-weight:600;
 
     cursor:pointer;
 
     display:flex;
-
-    justify-content:center;
-
     align-items:center;
-
+    justify-content:center;
     gap:10px;
 
     transition:.3s;
-
 }
 
 .logout:hover{
-
     background:var(--danger-hover);
-
-    transform:translateY(-2px);
-
-}
-
-.logout svg{
-
-    font-size:18px;
-
 }
 
 /* ===================================================
@@ -267,17 +145,10 @@
 =================================================== */
 
 .main-content{
-
     flex:1;
-
     margin-left:260px;
-
     padding:30px;
-
-    transition:.35s;
-
     overflow-x:hidden;
-
 }
 
 /* ===================================================
@@ -290,18 +161,18 @@
 
 }
 
-/* ===================================================
-   MENU BUTTON
-=================================================== */
+.mobile-space{
 
-.menu-btn{
-
-    display:none;
+    width:40px;
 
 }
 
+.menu-btn{
+    display:none;
+}
+
 /* ===================================================
-   SIDEBAR OVERLAY
+   OVERLAY
 =================================================== */
 
 .sidebar-overlay{
@@ -309,46 +180,6 @@
     inset:0;
     background:rgba(0,0,0,.45);
     z-index:999;
-    animation:fadeIn .25s ease;
-}
-
-/* ===================================================
-   DARK MODE
-=================================================== */
-
-body.dark .sidebar{
-    background:var(--sidebar);
-    border-right:1px solid var(--border);
-}
-
-body.dark .menu a{
-    color:var(--sidebar-text);
-}
-
-body.dark .menu a:hover{
-    background:var(--sidebar-hover);
-}
-
-body.dark .menu .active{
-    background:var(--sidebar-active);
-}
-
-body.dark .logout{
-    background:var(--danger);
-}
-
-body.dark .logout:hover{
-    background:var(--danger-hover);
-}
-
-body.dark .mobile-header{
-    background:var(--sidebar);
-    border-bottom:1px solid var(--border);
-}
-
-body.dark .menu-btn,
-body.dark .close-btn{
-    color:white;
 }
 
 /* ===================================================
@@ -363,7 +194,6 @@ body.dark .close-btn{
 
     .main-content{
         margin-left:220px;
-        padding:24px;
     }
 
 }
@@ -374,45 +204,83 @@ body.dark .close-btn{
 
 @media (max-width:768px){
 
-    .layout{
-        display:block;
-    }
-
-    /* ---------- Header ---------- */
-
     .mobile-header{
 
-        display:flex;
+    display:flex;
 
-        align-items:center;
+    align-items:center;
 
-        justify-content:space-between;
+    justify-content:space-between;
 
-        position:sticky;
+    height:64px;
 
-        top:0;
+    background:white;
 
-        z-index:900;
+    padding:0 16px;
 
-        height:65px;
+    position:sticky;
 
-        padding:0 18px;
+    top:0;
 
-        background:var(--sidebar);
+    z-index:999;
 
-        color:white;
+    border-bottom:1px solid #e5e7eb;
 
-        box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
 
-    }
+.mobile-header h2{
+
+    flex:1;
+
+    text-align:center;
+
+    margin:0;
+
+    font-size:24px;
+
+    font-weight:700;
+
+    color:#111827;
+
+}
+
+.menu-btn{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:40px;
+
+    height:40px;
+
+    background:none;
+
+    border:none;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+}
 
     .mobile-header h2{
 
+        display:block;
+
         margin:0;
 
-        font-size:22px;
+        font-size:24px;
 
         font-weight:700;
+
+        color:#111827;
+
+        flex:1;
+
+        text-align:center;
 
     }
 
@@ -425,32 +293,22 @@ body.dark .close-btn{
         justify-content:center;
 
         width:42px;
-
         height:42px;
 
+        background:none;
         border:none;
 
-        background:none;
-
-        color:white;
+        font-size:26px;
 
         cursor:pointer;
 
-        font-size:28px;
-
     }
-
-    /* ---------- Sidebar ---------- */
 
     .sidebar{
 
-        width:260px;
-
         left:-270px;
 
-        top:0;
-
-        transition:left .35s ease;
+        width:260px;
 
         box-shadow:8px 0 30px rgba(0,0,0,.25);
 
@@ -468,47 +326,9 @@ body.dark .close-btn{
 
     }
 
-    .sidebar-top{
-
-        margin-bottom:35px;
-
-    }
-
-    .logo{
-
-        font-size:26px;
-
-    }
-
-    .menu{
-
-        gap:8px;
-
-    }
-
-    .menu a{
-
-        padding:15px;
-
-        font-size:15px;
-
-    }
-
-    .logout{
-
-        height:50px;
-
-        font-size:15px;
-
-    }
-
-    /* ---------- Main ---------- */
-
     .main-content{
 
         margin-left:0;
-
-        width:100%;
 
         padding:18px;
 
@@ -524,15 +344,15 @@ body.dark .close-btn{
 
     .mobile-header{
 
-        padding:0 14px;
-
         height:60px;
+
+        padding:0 14px;
 
     }
 
     .mobile-header h2{
 
-        font-size:20px;
+        font-size:21px;
 
     }
 
@@ -550,25 +370,36 @@ body.dark .close-btn{
 
     }
 
-    .logo{
-
-        font-size:24px;
-
-    }
-
-    .menu a{
-
-        font-size:14px;
-
-        padding:14px;
-
-    }
-
     .main-content{
 
         padding:14px;
 
     }
+
+}
+
+/* ===================================================
+   DARK MODE
+=================================================== */
+
+body.dark .mobile-header{
+
+    background:var(--sidebar);
+
+    border-bottom:1px solid var(--border);
+
+}
+
+body.dark .mobile-header h2{
+
+    color:white;
+
+}
+
+body.dark .menu-btn,
+body.dark .close-btn{
+
+    color:white;
 
 }
 
@@ -581,22 +412,6 @@ body.dark .close-btn{
 }
 
 .sidebar::-webkit-scrollbar-thumb{
-    background:rgba(255,255,255,.18);
+    background:rgba(255,255,255,.2);
     border-radius:20px;
-}
-
-/* ===================================================
-   ANIMATIONS
-=================================================== */
-
-@keyframes fadeIn{
-
-    from{
-        opacity:0;
-    }
-
-    to{
-        opacity:1;
-    }
-
 }

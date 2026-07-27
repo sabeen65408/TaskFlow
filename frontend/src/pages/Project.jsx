@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import "../styles/project.css";
-import ActivityTimeline from "../components/ActivityTimeline";
-import TeamMembers from "../components/TeamMembers";
 import toast from "react-hot-toast";
 
 import {
@@ -11,11 +8,17 @@ import {
   Draggable,
 } from "@hello-pangea/dnd";
 
-import {
-  FiPlus,
-  FiClipboard,
-  FiUsers,
-} from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
+
+import "../styles/project.css";
+import "../styles/modal.css";
+
+import ActivityTimeline from "../components/ActivityTimeline";
+import TeamMembers from "../components/TeamMembers";
+import TaskCard from "../components/TaskCard";
+import EditTaskModal from "../components/EditTaskModal";
+import Comments from "../components/Comments";
+import AttachmentSection from "../components/AttachmentSection";
 
 import { getBoard } from "../services/boardService";
 
@@ -28,12 +31,6 @@ import {
 } from "../services/taskService";
 
 import { getUsers } from "../services/userService";
-
-import TaskCard from "../components/TaskCard";
-import EditTaskModal from "../components/EditTaskModal";
-import Comments from "../components/Comments";
-import AttachmentSection from "../components/AttachmentSection";
-import "../styles/modal.css";
 
 function Project() {
 
@@ -53,25 +50,19 @@ function Project() {
   const [showModal, setShowModal] = useState(false);
 
   const [selectedTask, setSelectedTask] = useState(null);
-
-const [showAttachment, setShowAttachment] = useState(false);
-
-const [showComments, setShowComments] = useState(false);
+  const [showAttachment, setShowAttachment] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [userFilter, setUserFilter] = useState("All");
 
   useEffect(() => {
-
     loadProject();
-
   }, [id]);
 
   const loadProject = async () => {
-
     try {
-
       const boardData = await getBoard(id);
       setBoard(boardData);
 
@@ -80,23 +71,23 @@ const [showComments, setShowComments] = useState(false);
 
       const userData = await getUsers();
       setUsers(userData);
-
-    } catch (err) {
-
-      console.log(err);
-
-    }
-
+    } 
+    catch(err){
+    console.log(err);
+    toast.error("Unable to load project");
+}
   };
 
   const handleCreateTask = async () => {
 
-    if (!title.trim()) return;
+    if (!title.trim()) {
+      toast.error("Task title is required");
+      return;
+    }
 
     try {
 
       const newTask = await createTask({
-
         title,
         description,
         assignedTo,
@@ -104,24 +95,23 @@ const [showComments, setShowComments] = useState(false);
         dueDate,
         project: id,
         column: "Todo",
-
       });
 
-      setTasks(prev => [...prev, newTask]);
+      setTasks((prev) => [...prev, newTask]);
 
       setTitle("");
       setDescription("");
       setAssignedTo("");
       setPriority("Medium");
       setDueDate("");
+
       toast.success("Task Created");
+      await loadProject();
 
     } catch (err) {
-
       console.log(err);
-
+      toast.error("Unable to create task");
     }
-
   };
 
   const handleDeleteTask = async (taskId) => {
@@ -129,27 +119,22 @@ const [showComments, setShowComments] = useState(false);
     try {
 
       await deleteTask(taskId);
-      toast.success("Task Deleted");
 
-      setTasks(prev =>
-        prev.filter(task => task._id !== taskId)
+      setTasks((prev) =>
+        prev.filter((task) => task._id !== taskId)
       );
 
+      toast.success("Task Deleted");
+
     } catch (err) {
-
       console.log(err);
-
+      toast.error("Unable to delete task");
     }
-
   };
 
   const handleEditTask = (task) => {
-
     setEditingTask(task);
-    
-
     setShowModal(true);
-
   };
 
   const saveTask = async (updatedData) => {
@@ -161,8 +146,8 @@ const [showComments, setShowComments] = useState(false);
         updatedData
       );
 
-      setTasks(prev =>
-        prev.map(task =>
+      setTasks((prev) =>
+        prev.map((task) =>
           task._id === updated._id
             ? updated
             : task
@@ -170,16 +155,14 @@ const [showComments, setShowComments] = useState(false);
       );
 
       setShowModal(false);
-
       setEditingTask(null);
+
       toast.success("Task Updated");
 
     } catch (err) {
-
       console.log(err);
-
+      toast.error("Unable to update task");
     }
-
   };
 
   const onDragEnd = async (result) => {
@@ -187,21 +170,15 @@ const [showComments, setShowComments] = useState(false);
     if (!result.destination) return;
 
     const taskId = result.draggableId;
+    const newColumn = result.destination.droppableId;
 
-    const newColumn =
-      result.destination.droppableId;
-
-    const updatedTasks = tasks.map(task =>
-
+    const updatedTasks = tasks.map((task) =>
       task._id === taskId
-
         ? {
             ...task,
             column: newColumn,
           }
-
         : task
-
     );
 
     setTasks(updatedTasks);
@@ -209,324 +186,178 @@ const [showComments, setShowComments] = useState(false);
     try {
 
       await updateTask(taskId, {
-
         column: newColumn,
-
       });
 
-    } catch (err) {
+    } catch(err){
 
       console.log(err);
+      toast.error("Unable to move task");
+      loadProject();
 
-    }
-
+}
   };
 
-  if (!board)
-
+  if (!board) {
     return (
-
-      <h2
-        style={{
-          padding: 40,
-          textAlign: "center",
-        }}
-      >
-        Loading Project...
+      <h2 className="project-loading">
+    Loading Project...
       </h2>
-
     );
+  }
 
   return (
 
-<DragDropContext onDragEnd={onDragEnd}>
+    <DragDropContext onDragEnd={onDragEnd}>
 
-<div
-style={{
-background:"#f5f7fb",
-height:"100%",
-padding:"30px"
-}}
->
+      <div className="project-page">
 
-{/* ================= HEADER ================= */}
+        {/* ================= HEADER ================= */}
 
-<div
-style={{
-display:"flex",
-justifyContent:"space-between",
-alignItems:"center",
-marginBottom:"30px"
-}}
->
+        <div className="project-header">
 
-<div>
+          <div>
 
-<h1
-style={{
-fontSize:"34px",
-fontWeight:"700",
-color:"#111827"
-}}
->
-📋 Project Board
-</h1>
+            <h1 className="project-title">
+              {board?.title || "Project Board"}
+            </h1>
 
-<div
-  style={{
-    display: "flex",
-    gap: "15px",
-    marginBottom: "25px",
-    flexWrap: "wrap",
-  }}
->
+            <p className="project-subtitle">
+              Manage your tasks with Drag & Drop
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* ================= FILTERS ================= */}
+
+        <div className="project-filters">
+
+          <input
+            type="text"
+            placeholder="🔍 Search tasks..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="task-input"
+          />
+
+          <select
+            className="task-input"
+            value={priorityFilter}
+            onChange={(e) =>
+              setPriorityFilter(e.target.value)
+            }
+          >
+            <option>All</option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+          </select>
+
+          <select
+            className="task-input"
+            value={userFilter}
+            onChange={(e) =>
+              setUserFilter(e.target.value)
+            }
+          >
+            <option value="All">
+              All Users
+            </option>
+
+            {users.map((user) => (
+
+              <option
+                key={user._id}
+                value={user._id}
+              >
+                {user.name}
+              </option>
+
+            ))}
+
+          </select>
+
+        </div>
+
+        {/* ================= CREATE TASK ================= */} 
+
+<div className="create-task-card">
+
+  <h2 className="create-task-title">
+    Create New Task
+  </h2>
+
   <input
+    className="task-input"
     type="text"
-    placeholder="🔍 Search tasks..."
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    style={{
-      flex: 1,
-      minWidth: "250px",
-      padding: "12px",
-      borderRadius: "8px",
-      border: "1px solid #ddd",
-    }}
+    placeholder="Task Title"
+    value={title}
+    onChange={(e) => setTitle(e.target.value)}
   />
 
-  <select
-    value={priorityFilter}
-    onChange={(e) => setPriorityFilter(e.target.value)}
-    style={{
-      padding: "12px",
-      borderRadius: "8px",
-    }}
-  >
-    <option>All</option>
-    <option>Low</option>
-    <option>Medium</option>
-    <option>High</option>
-  </select>
+  <textarea
+    className="task-textarea"
+    placeholder="Task Description"
+    value={description}
+    onChange={(e) => setDescription(e.target.value)}
+  />
 
-  <select
-    value={userFilter}
-    onChange={(e) => setUserFilter(e.target.value)}
-    style={{
-      padding: "12px",
-      borderRadius: "8px",
-    }}
-  >
-    <option value="All">All Users</option>
+  <div className="task-form-grid">
 
-    {users.map((user) => (
-      <option
-        key={user._id}
-        value={user._id}
-      >
-        {user.name}
+    <select
+      className="task-input"
+      value={assignedTo}
+      onChange={(e) => setAssignedTo(e.target.value)}
+    >
+      <option value="">
+        Assign User
       </option>
-    ))}
-  </select>
-</div>
 
-<p
-style={{
-color:"#6b7280",
-marginTop:"6px"
-}}
->
-Manage your tasks with Drag & Drop
-</p>
+      {users.map((user) => (
 
-</div>
+        <option
+          key={user._id}
+          value={user._id}
+        >
+          {user.name}
+        </option>
 
-<div
-style={{
-background:"white",
-padding:"18px",
-borderRadius:"14px",
-boxShadow:"0 5px 15px rgba(0,0,0,.08)"
-}}
->
+      ))}
 
-<FiClipboard size={28}/>
+    </select>
 
-</div>
+    <select
+      className="task-input"
+      value={priority}
+      onChange={(e) => setPriority(e.target.value)}
+    >
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
 
-</div>
+    <input
+      className="task-input"
+      type="date"
+      value={dueDate}
+      onChange={(e) => setDueDate(e.target.value)}
+    />
 
-{/* ================= CREATE TASK ================= */}
+  </div>
 
-<div
-style={{
-background:"white",
-padding:"25px",
-borderRadius:"18px",
-boxShadow:"0 8px 25px rgba(0,0,0,.08)",
-marginBottom:"35px"
-}}
->
+  <button
+    className="create-task-btn"
+    onClick={handleCreateTask}
+  >
+    <FiPlus />
 
-<h2
-style={{
-marginBottom:"20px"
-}}
->
-Create New Task
-</h2>
+    <span>
+      Create Task
+    </span>
 
-<input
-
-type="text"
-
-placeholder="Task Title"
-
-value={title}
-
-onChange={(e)=>setTitle(e.target.value)}
-
-style={{
-width:"100%",
-padding:"14px",
-border:"1px solid #ddd",
-borderRadius:"10px",
-marginBottom:"15px",
-fontSize:"15px"
-}}
-
-/>
-
-<textarea
-
-placeholder="Task Description"
-
-value={description}
-
-onChange={(e)=>setDescription(e.target.value)}
-
-style={{
-width:"100%",
-height:"110px",
-padding:"14px",
-border:"1px solid #ddd",
-borderRadius:"10px",
-marginBottom:"20px",
-fontSize:"15px"
-}}
-
-/>
-
-<div
-style={{
-display:"grid",
-gridTemplateColumns:"repeat(3,1fr)",
-gap:"15px",
-marginBottom:"20px"
-}}
->
-
-<select
-
-value={assignedTo}
-
-onChange={(e)=>setAssignedTo(e.target.value)}
-
-style={{
-padding:"12px",
-borderRadius:"10px",
-border:"1px solid #ddd"
-}}
->
-
-<option value="">
-Assign User
-</option>
-
-{
-
-users.map(user=>(
-
-<option
-
-key={user._id}
-
-value={user._id}
-
->
-
-{user.name}
-
-</option>
-
-))
-
-}
-
-</select>
-
-<select
-
-value={priority}
-
-onChange={(e)=>setPriority(e.target.value)}
-
-style={{
-padding:"12px",
-borderRadius:"10px",
-border:"1px solid #ddd"
-}}
->
-
-<option>Low</option>
-
-<option>Medium</option>
-
-<option>High</option>
-
-</select>
-
-<input
-
-type="date"
-
-value={dueDate}
-
-onChange={(e)=>setDueDate(e.target.value)}
-
-style={{
-padding:"12px",
-borderRadius:"10px",
-border:"1px solid #ddd"
-}}
-
-/>
-
-</div>
-
-<button
-
-onClick={handleCreateTask}
-
-style={{
-background:"#4f46e5",
-color:"white",
-border:"none",
-padding:"14px 24px",
-borderRadius:"10px",
-cursor:"pointer",
-display:"flex",
-alignItems:"center",
-gap:"10px",
-fontWeight:"600",
-fontSize:"15px"
-}}
->
-
-<FiPlus/>
-
-Create Task
-
-</button>
+  </button>
 
 </div>
 
@@ -534,68 +365,72 @@ Create Task
 
 <div className="project-board">
 
-{board.columns.map((column) => (
+  {board.columns.map((column) => (
 
-  <Droppable
-    key={column._id}
-    droppableId={column.title}
-  >
-    {(provided) => (
+    <Droppable
+      key={column._id}
+      droppableId={column.title}
+    >
+      {(provided) => (
 
-      <div
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        className={`kanban-column ${
-    column.title === "Todo"
-        ? "todo"
-        : column.title === "In Progress"
-        ? "progress"
-        : column.title === "Review"
-        ? "review"
-        : "done"
-}`}
-      >
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          className={`kanban-column ${
+            column.title === "Todo"
+              ? "todo"
+              : column.title === "In Progress"
+              ? "progress"
+              : column.title === "Review"
+              ? "review"
+              : "done"
+          }`}
+        >
 
-        {/* Column Header */}
+          {/* Column Header */}
 
-        <div className="column-header">
+          <div className="column-header">
 
-          <h3 className="column-title">
-            {column.title}
-          </h3>
+            <h3 className="column-title">
+              {column.title}
+            </h3>
 
-          <span className="column-count">
-            {
-              tasks.filter(
-                task => task.column === column.title
-              ).length
-            }
-          </span>
+            <span className="column-count">
+              {
+                tasks.filter(
+                  (task) =>
+                    task.column === column.title
+                ).length
+              }
+            </span>
 
-        </div>
+          </div>
 
-        {
+          {tasks
 
-          tasks
-              .filter((task) => task.column === column.title)
+            .filter(
+              (task) =>
+                task.column === column.title
+            )
 
-              .filter((task) =>
-                task.title
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-              )
+            .filter((task) =>
+              task.title
+                .toLowerCase()
+                .includes(search.toLowerCase())
+            )
 
-              .filter((task) =>
-                priorityFilter === "All"
-                  ? true
-                  : task.priority === priorityFilter
-              )
+            .filter((task) =>
+              priorityFilter === "All"
+                ? true
+                : task.priority === priorityFilter
+            )
 
-              .filter((task) =>
-                userFilter === "All"
-                  ? true
-                  : task.assignedTo?._id === userFilter
-              )
+            .filter((task) =>
+              userFilter === "All"
+                ? true
+                : task.assignedTo?._id === userFilter
+            )
+
             .map((task, index) => (
 
               <Draggable
@@ -603,134 +438,135 @@ Create Task
                 draggableId={task._id}
                 index={index}
               >
-
                 {(provided) => (
 
-                  <div
+  <div
+    ref={provided.innerRef}
+    {...provided.draggableProps}
+    {...provided.dragHandleProps}
+    style={{
+      marginBottom: "15px",
+      ...provided.draggableProps.style,
+    }}
+  >
 
-                    ref={provided.innerRef}
-
-                    {...provided.draggableProps}
-
-                    {...provided.dragHandleProps}
-
-                    style={{
-                      marginBottom: "15px",
-                      ...provided.draggableProps.style
-                    }}
-
-                  >
-
-                    <TaskCard
-    task={task}
-    onDelete={handleDeleteTask}
-    onEdit={handleEditTask}
-    onAttachment={(task) => {
+    <TaskCard
+      task={task}
+      onDelete={handleDeleteTask}
+      onEdit={handleEditTask}
+      onAttachment={(task) => {
         setSelectedTask(task);
         setShowAttachment(true);
-    }}
-    onComment={(task) => {
+      }}
+      onComment={(task) => {
         setSelectedTask(task);
         setShowComments(true);
-    }}
-/>
+      }}
+    />
 
-                  </div>
+  </div>
 
-                )}
+)}
 
               </Draggable>
 
-            ))
+            ))}
 
-        }
+          {provided.placeholder}
 
-        {provided.placeholder}
+        </div>
+
+      )}
+
+    </Droppable>
+
+  ))}
+
+</div>
+
+{/* ================= PROJECT SIDEBAR ================= */}
+
+<div className="project-bottom">
+
+  <ActivityTimeline projectId={id} />
+
+  <TeamMembers projectId={id} />
+
+</div>
+{/* ================= EDIT TASK MODAL ================= */}
+
+{
+  showModal && (
+
+    <EditTaskModal
+      task={editingTask}
+      users={users}
+      onClose={() => {
+        setShowModal(false);
+        setEditingTask(null);
+      }}
+      onSave={saveTask}
+    />
+
+  )
+}
+
+{/* ================= COMMENTS MODAL ================= */}
+
+{
+  showComments && selectedTask && (
+
+    <div className="modal-overlay">
+
+      <div className="modal-content">
+
+        <button
+          onClick={() => {
+            setShowComments(false);
+            setSelectedTask(null);
+          }}
+        >
+          Close
+        </button>
+
+        <Comments
+          taskId={selectedTask._id}
+        />
 
       </div>
 
-    )}
+    </div>
 
-  </Droppable>
-
-))}
-
-<ActivityTimeline projectId={id} />
-<TeamMembers projectId={id} />
-</div>
-
-{
-showModal && (
-
-<EditTaskModal
-
-task={editingTask}
-
-users={users}
-
-onClose={()=>{
-setShowModal(false);
-setEditingTask(null);
-}}
-
-onSave={saveTask}
-
-/>
-
-)
-
+  )
 }
 
-{
-showComments && selectedTask && (
-
-<div className="modal-overlay">
-
-<div className="modal-content">
-
-<button
-onClick={()=>{
-setShowComments(false);
-setSelectedTask(null);
-}}
->
-Close
-</button>
-
-<Comments taskId={selectedTask._id} />
-
-</div>
-
-</div>
-
-)
-}
+{/* ================= ATTACHMENT MODAL ================= */}
 
 {
-showAttachment && selectedTask && (
+  showAttachment && selectedTask && (
 
-<div className="modal-overlay">
+    <div className="modal-overlay">
 
-<div className="modal-content">
+      <div className="modal-content">
 
-<button
-onClick={()=>{
-setShowAttachment(false);
-setSelectedTask(null);
-}}
->
-Close
-</button>
+        <button
+          onClick={() => {
+            setShowAttachment(false);
+            setSelectedTask(null);
+          }}
+        >
+          Close
+        </button>
 
-<AttachmentSection
-taskId={selectedTask._id}
-/>
+        <AttachmentSection
+          taskId={selectedTask._id}
+        />
 
-</div>
+      </div>
 
-</div>
+    </div>
 
-)
+  )
 }
 
 </div>

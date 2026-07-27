@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { getActivities } from "../services/activityService";
+import { getProjectActivities } from "../services/activityService";
+import "../styles/activityTimeline.css";
 
 function ActivityTimeline({ projectId }) {
 
@@ -7,72 +8,88 @@ function ActivityTimeline({ projectId }) {
 
     useEffect(() => {
 
-        load();
+        loadActivities();
 
-    }, []);
+    }, [projectId]);
 
-    const load = async () => {
+    const loadActivities = async () => {
 
-        const data = await getActivities(projectId);
+        try {
 
-        setActivities(data);
+            const data = await getProjectActivities(projectId);
+
+            setActivities(data);
+
+        }
+
+        catch (err) {
+
+            console.log(err);
+
+        }
 
     };
 
     return (
 
-        <div
-            style={{
-                background:"#fff",
-                padding:"20px",
-                borderRadius:"12px",
-                marginTop:"25px"
-            }}
-        >
+        <div className="activity-card">
 
-            <h3>📜 Recent Activity</h3>
+            <h3 className="activity-title">
+
+                📜 Recent Activity
+
+            </h3>
 
             {
 
-                activities.length===0 ?
+                activities.length === 0 ?
 
-                <p>No activity yet.</p>
+                <p className="activity-empty">
+
+                    No activity yet.
+
+                </p>
 
                 :
 
-                activities.map(a=>(
+                <div className="activity-list">
 
-                    <div
-                        key={a._id}
-                        style={{
-                            padding:"12px 0",
-                            borderBottom:"1px solid #eee"
-                        }}
-                    >
+                    {
 
-                        <strong>
+                        activities.map((activity) => (
 
-                            {a.user?.name}
+                            <div
+                                key={activity._id}
+                                className="activity-item"
+                            >
 
-                        </strong>
+                                <div className="activity-user">
 
-                        <br/>
+                                    {activity.user?.name}
 
-                        {a.action}
+                                </div>
 
-                        <br/>
+                                <div className="activity-action">
 
-                        <small>
+                                    {activity.action}
 
-                            {new Date(
-                                a.createdAt
-                            ).toLocaleString()}
+                                </div>
 
-                        </small>
+                                <div className="activity-time">
 
-                    </div>
+                                    {new Date(
+                                        activity.createdAt
+                                    ).toLocaleString()}
 
-                ))
+                                </div>
+
+                            </div>
+
+                        ))
+
+                    }
+
+                </div>
 
             }
 

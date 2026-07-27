@@ -1,14 +1,16 @@
 import NotificationBell from "../components/NotificationBell";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
+  const navigate = useNavigate();
   
   const logout = () => {
 
     localStorage.removeItem("token");
 
-    window.location.href = "/";
+    navigate("/", { replace: true });
 
-  };
+};
 
   return (
 

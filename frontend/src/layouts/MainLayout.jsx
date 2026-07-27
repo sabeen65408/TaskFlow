@@ -57,9 +57,13 @@ function MainLayout() {
 
     localStorage.removeItem("token");
 
-    toast.success("Logged Out");
+window.dispatchEvent(new Event("authChanged"));
 
-    navigate("/");
+toast.success("Logged Out");
+
+navigate("/", {
+  replace: true,
+});
   };
 
   return (
@@ -69,16 +73,20 @@ function MainLayout() {
 
       <div className="mobile-header">
 
-        <button
-          className="menu-btn"
-          onClick={() => setSidebarOpen(true)}
-        >
-          <FiMenu />
-        </button>
+  <button
+    className="menu-btn"
+    onClick={() => setSidebarOpen(true)}
+  >
+    <FiMenu />
+  </button>
 
-        <h2>🚀 TaskFlow</h2>
+  <h2>
+    🚀 TaskFlow
+  </h2>
 
-      </div>
+  <div className="mobile-space"></div>
+
+</div>
 
       {/* Overlay */}
 

@@ -1,7 +1,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
 import Dashboard from "./pages/Dashboard";
 import Project from "./pages/Project";
 import Calendar from "./pages/Calendar";
@@ -13,22 +17,39 @@ import MainLayout from "./layouts/MainLayout";
 import { Toaster } from "react-hot-toast";
 
 function App() {
-  const token = localStorage.getItem("token");
+
+  const [token, setToken] = useState(
+    localStorage.getItem("token")
+  );
+
+  useEffect(() => {
+
+    const syncAuth = () => {
+      setToken(localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", syncAuth);
+    window.addEventListener("authChanged", syncAuth);
+
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("authChanged", syncAuth);
+    };
+
+  }, []);
 
   return (
     <>
       <Routes>
 
-        {/* Public Routes */}
+        {/* Public */}
 
         <Route
           path="/"
           element={
-            token ? (
-              <Navigate to="/dashboard" />
-            ) : (
-              <Login />
-            )
+            token
+              ? <Navigate to="/dashboard" replace />
+              : <Login />
           }
         />
 
@@ -37,17 +58,26 @@ function App() {
           element={<Register />}
         />
 
-        {/* Protected Routes */}
+        <Route
+          path="/forgot-password"
+          element={<ForgotPassword />}
+        />
+
+        <Route
+          path="/reset-password/:token"
+          element={<ResetPassword />}
+        />
+
+        {/* Protected */}
 
         <Route
           element={
-            token ? (
-              <MainLayout />
-            ) : (
-              <Navigate to="/" />
-            )
+            token
+              ? <MainLayout />
+              : <Navigate to="/" replace />
           }
         >
+
           <Route
             path="/dashboard"
             element={<Dashboard />}
@@ -72,6 +102,7 @@ function App() {
             path="/settings"
             element={<Settings />}
           />
+
         </Route>
 
       </Routes>
@@ -79,17 +110,11 @@ function App() {
       <Toaster
         position="top-right"
         reverseOrder={false}
-        toastOptions={{
-          duration: 3000,
-          style: {
-            borderRadius: "10px",
-            background: "#1f2937",
-            color: "#fff",
-          },
-        }}
       />
+
     </>
   );
+
 }
 
 export default App;

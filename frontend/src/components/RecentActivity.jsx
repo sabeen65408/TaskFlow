@@ -1,71 +1,95 @@
-import { FiEdit3 } from "react-icons/fi";
+import { FiActivity } from "react-icons/fi";
 
-function RecentActivity({ tasks }) {
+function RecentActivity({ activities }) {
 
-  const recentTasks = [...tasks]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt) -
-        new Date(a.createdAt)
-    )
-    .slice(0, 5);
+    return (
 
-  return (
+        <div className="dashboard-card">
 
-    <div className="dashboard-card">
+            <h2 className="dashboard-heading">
 
-      <h2 className="dashboard-heading">
+                <FiActivity />
 
-        <FiEdit3 />
+                Recent Activity
 
-        Recent Activity
-
-      </h2>
-
-      <div className="dashboard-content">
-
-        {
-
-          recentTasks.length === 0 ?
-
-          <p className="dashboard-empty">
-
-            No recent activity.
-
-          </p>
-
-          :
-
-          recentTasks.map(task => (
+            </h2>
 
             <div
-              key={task._id}
-              className="dashboard-row"
+                className="dashboard-content"
+                style={{
+                    maxHeight: "420px",
+                    overflowY: "auto"
+                }}
             >
 
-              <strong>
+                {activities.length === 0 ? (
 
-                {task.title}
+                    <p className="dashboard-empty">
 
-              </strong>
+                        No recent activity.
 
-              <small>
+                    </p>
 
-                Assigned to {task.assignedTo?.name || "Nobody"}
+                ) : (
 
-              </small>
+                    activities.map(activity => (
+
+                        <div
+                            key={activity._id}
+                            className="dashboard-row"
+                        >
+
+                            <strong>
+
+                                📁 {activity.project?.title || "Project"}
+
+                            </strong>
+
+                            <small>
+
+                                ✅ Task :
+                                {" "}
+                                {activity.task?.title || "-"}
+
+                            </small>
+
+                            <small>
+
+                                ✏️ Action :
+                                {" "}
+                                {activity.action}
+
+                            </small>
+
+                            <small>
+
+                                👤 User :
+                                {" "}
+                                {activity.user?.name}
+
+                            </small>
+
+                            <small>
+
+                                🕒
+                                {" "}
+                                {new Date(
+                                    activity.createdAt
+                                ).toLocaleString()}
+
+                            </small>
+
+                        </div>
+
+                    ))
+
+                )}
 
             </div>
 
-          ))
+        </div>
 
-        }
-
-      </div>
-
-    </div>
-
-  );
+    );
 
 }
 

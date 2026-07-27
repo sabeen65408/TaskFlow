@@ -5,8 +5,8 @@ import ProjectCard from "../components/ProjectCard";
 import DashboardCharts from "../components/DashboardCharts";
 import RecentActivity from "../components/RecentActivity";
 import UpcomingDeadlines from "../components/UpcomingDeadlines";
-import TeamMembers from "../components/TeamMembers";
 import StatCard from "../components/StatCard";
+import { getActivities } from "../services/activityService";
 
 import { getAllTasks } from "../services/taskService";
 
@@ -22,6 +22,7 @@ import "../styles/dashboard.css";
 function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
+  const [activities, setActivities] = useState([]);
 
   const [search, setSearch] = useState("");
 
@@ -49,10 +50,21 @@ function Dashboard() {
 
       const taskData = await getAllTasks();
       setTasks(taskData);
-    } catch (err) {
-      console.log(err);
-      toast.error("Failed to load dashboard");
-    }
+
+      const activityData = await getActivities();
+      setActivities(activityData);
+    } 
+    catch (err) {
+
+  console.log(err);
+
+  if (err.response?.status === 401) {
+    return;
+  }
+
+  toast.error("Failed to load dashboard");
+
+}
   };
 
   const handleCreateProject = async () => {
@@ -153,15 +165,15 @@ function Dashboard() {
 
         {/* Widgets */}
 
-        <div className="dashboard-widgets">
+        {/* Widgets */}
 
-          <RecentActivity tasks={tasks} />
+<div className="dashboard-widgets">
 
-          <UpcomingDeadlines tasks={tasks} />
+  <RecentActivity activities={activities} />
 
-          <TeamMembers tasks={tasks} />
+  <UpcomingDeadlines tasks={tasks} />
 
-        </div>
+</div>
 
         {/* Create Project */}
 

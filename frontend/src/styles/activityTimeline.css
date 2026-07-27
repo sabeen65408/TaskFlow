@@ -1,0 +1,104 @@
+/* =====================================================
+   ACTIVITY TIMELINE
+===================================================== */
+
+.activity-card{
+    background:#ffffff;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    width:100%;
+    box-sizing:border-box;
+}
+
+.activity-title{
+    font-size:22px;
+    font-weight:700;
+    margin:0 0 20px;
+    color:#111827;
+}
+
+.activity-empty{
+    color:#6b7280;
+    text-align:center;
+    padding:20px 0;
+}
+
+/* Scroll Area */
+
+.activity-list{
+    max-height:420px;
+    overflow-y:auto;
+    padding-right:8px;
+}
+
+/* Scrollbar */
+
+.activity-list::-webkit-scrollbar{
+    width:6px;
+}
+
+.activity-list::-webkit-scrollbar-thumb{
+    background:#d1d5db;
+    border-radius:20px;
+}
+
+.activity-list::-webkit-scrollbar-thumb:hover{
+    background:#9ca3af;
+}
+
+/* Item */
+
+.activity-item{
+    padding:14px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.activity-item:last-child{
+    border-bottom:none;
+}
+
+.activity-user{
+    font-weight:700;
+    color:#111827;
+    margin-bottom:4px;
+}
+
+.activity-action{
+    color:#374151;
+    line-height:1.5;
+    margin-bottom:6px;
+}
+
+.activity-time{
+    color:#6b7280;
+    font-size:13px;
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width:768px){
+
+.activity-card{
+    padding:18px;
+}
+
+.activity-title{
+    font-size:20px;
+}
+
+.activity-list{
+    max-height:320px;
+}
+
+.activity-action{
+    font-size:14px;
+}
+
+.activity-time{
+    font-size:12px;
+}
+
+}

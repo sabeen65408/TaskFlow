@@ -7,6 +7,8 @@ import {
   FiCheckSquare,
 } from "react-icons/fi";
 
+import "../styles/profile.css";
+
 import {
   getProfile,
   updateProfile,
@@ -28,9 +30,7 @@ function Profile() {
   });
 
   useEffect(() => {
-
     loadData();
-
   }, []);
 
   const loadData = async () => {
@@ -57,147 +57,86 @@ function Profile() {
 
   const save = async () => {
 
-    await updateProfile({ name });
+    try {
 
-    alert("Profile Updated Successfully");
+      await updateProfile({ name });
+
+      alert("Profile Updated Successfully");
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Unable to update profile");
+
+    }
 
   };
 
   return (
 
-    <div
-      style={{
-        maxWidth: "900px",
-        margin: "40px auto",
-      }}
-    >
+    <div className="profile-page">
 
-      <div
-        style={{
-          background: "white",
-          borderRadius: "20px",
-          padding: "40px",
-          boxShadow: "0 10px 30px rgba(0,0,0,.08)",
-        }}
-      >
+      {/* ================= PROFILE CARD ================= */}
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "30px",
-            marginBottom: "40px",
-          }}
-        >
+      <div className="profile-card">
 
-          <div
-            style={{
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              background: "#4f46e5",
-              color: "white",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "42px",
-              fontWeight: "bold",
-            }}
-          >
-            {name.charAt(0).toUpperCase()}
+        <div className="profile-header">
+
+          <div className="profile-avatar">
+
+            {name
+              ? name.charAt(0).toUpperCase()
+              : "U"}
+
           </div>
 
-          <div>
+          <div className="profile-info">
 
-            <h1
-              style={{
-                marginBottom: "8px",
-              }}
-            >
-              {name}
-            </h1>
+            <h1>{name}</h1>
 
-            <p
-              style={{
-                color: "#6b7280",
-              }}
-            >
-              MERN Developer
-            </p>
+            <p>MERN Developer</p>
 
           </div>
 
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "20px",
-          }}
-        >
+        {/* ================= FORM ================= */}
 
-          <div>
+        <div className="profile-form">
+
+          <div className="profile-group">
 
             <label>Name</label>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "12px",
-                marginTop: "8px",
-              }}
-            >
+            <div className="profile-input-box">
 
               <FiUser />
 
               <input
+                type="text"
                 value={name}
                 onChange={(e) =>
                   setName(e.target.value)
                 }
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  marginLeft: "10px",
-                }}
               />
 
             </div>
 
           </div>
 
-          <div>
+          <div className="profile-group">
 
             <label>Email</label>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                border: "1px solid #ddd",
-                borderRadius: "10px",
-                padding: "12px",
-                marginTop: "8px",
-              }}
-            >
+            <div className="profile-input-box">
 
               <FiMail />
 
               <input
+                type="email"
                 value={email}
                 disabled
-                style={{
-                  border: "none",
-                  outline: "none",
-                  width: "100%",
-                  marginLeft: "10px",
-                  background: "white",
-                }}
               />
 
             </div>
@@ -207,80 +146,65 @@ function Profile() {
         </div>
 
         <button
+          className="profile-btn"
           onClick={save}
-          style={{
-            marginTop: "35px",
-            background: "#4f46e5",
-            color: "white",
-            border: "none",
-            padding: "14px 28px",
-            borderRadius: "10px",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-            cursor: "pointer",
-            fontSize: "15px",
-            fontWeight: "600",
-          }}
         >
+
           <FiSave />
+
           Save Changes
+
         </button>
 
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3,1fr)",
-          gap: "20px",
-          marginTop: "30px",
-        }}
-      >
+      {/* ================= STATS ================= */}
 
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "18px",
-            textAlign: "center",
-          }}
-        >
-          <FiFolder size={30} color="#2563eb" />
+      <div className="profile-stats">
 
-          <h2>{stats.totalProjects}</h2>
+        <div className="profile-stat-card">
+
+          <FiFolder
+            size={32}
+            color="#2563eb"
+          />
+
+          <h2>
+            {stats.totalProjects}
+          </h2>
 
           <p>Projects</p>
+
         </div>
 
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "18px",
-            textAlign: "center",
-          }}
-        >
-          <FiCheckSquare size={30} color="#16a34a" />
+        <div className="profile-stat-card">
 
-          <h2>{stats.totalTasks}</h2>
+          <FiCheckSquare
+            size={32}
+            color="#16a34a"
+          />
+
+          <h2>
+            {stats.totalTasks}
+          </h2>
 
           <p>Tasks</p>
+
         </div>
 
-        <div
-          style={{
-            background: "white",
-            padding: "25px",
-            borderRadius: "18px",
-            textAlign: "center",
-          }}
-        >
-          <FiCheckSquare size={30} color="#7c3aed" />
+        <div className="profile-stat-card">
 
-          <h2>{stats.completedTasks}</h2>
+          <FiCheckSquare
+            size={32}
+            color="#7c3aed"
+          />
+
+          <h2>
+            {stats.completedTasks}
+          </h2>
 
           <p>Completed</p>
+
         </div>
 
       </div>
