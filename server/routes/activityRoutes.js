@@ -3,19 +3,22 @@ const router = require("express").Router();
 const protect = require("../middleware/authMiddleware");
 
 const {
+    getActivities,
+    getProjectActivities
+} = require("../controllers/activityController");
 
-    getActivities
-
-}=require("../controllers/activityController");
-
+// Dashboard
 router.get(
-
-    "/:projectId",
-
+    "/",
     protect,
-
     getActivities
-
 );
 
-module.exports=router;
+// Particular Project
+router.get(
+    "/:projectId",
+    protect,
+    getProjectActivities
+);
+
+module.exports = router;

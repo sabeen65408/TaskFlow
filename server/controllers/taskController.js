@@ -34,19 +34,22 @@ const createTask = async (req, res) => {
         }
 
         // Activity
-        await Activity.create({
+await Activity.create({
 
-            project: task.project,
+    project: task.project,
 
-            task: task._id,
+    task: task._id,
 
-            user: req.user._id,
+    user: req.user._id,
 
-            action: `created task "${task.title}"`
+    action: `created task "${task.title}"`
 
-        });
+});
 
-        res.status(201).json(task);
+// Populate assigned user before sending response
+await task.populate("assignedTo", "name email");
+
+res.status(201).json(task);
 
     }
 

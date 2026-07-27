@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
-const userSchema = new mongoose.Schema({
-
+const userSchema = new mongoose.Schema(
+{
     name:{
         type:String,
         required:true
@@ -32,11 +32,21 @@ const userSchema = new mongoose.Schema({
     taskNotifications:{
         type:Boolean,
         default:true
+    },
+
+    // NEW
+
+    resetPasswordToken:{
+        type:String
+    },
+
+    resetPasswordExpire:{
+        type:Date
     }
 
 },
 {
-timestamps:true
+    timestamps:true
 });
 
 module.exports = mongoose.model("User", userSchema);
