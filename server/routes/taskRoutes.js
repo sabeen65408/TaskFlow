@@ -11,21 +11,44 @@ const {
     getTask,
     updateTask,
     deleteTask,
-    moveTask
+    moveTask,
 } = require("../controllers/taskController");
 
-router.route("/")
-.get(protect, getAllTasks)
-.post(protect, createTask);
+// =====================================
+// All Tasks
+// =====================================
 
-router.route("/project/:projectId")
-.get(protect,getTasksByProject);
+router.route("/")
+    .get(protect, getAllTasks)
+    .post(protect, createTask);
+
+// =====================================
+// Tasks by Project (THIS WAS MISSING)
+// =====================================
+
+router.get(
+    "/project/:projectId",
+    protect,
+    getTasksByProject
+);
+
+// =====================================
+// Single Task
+// =====================================
 
 router.route("/:id")
-.get(protect,getTask)
-.put(protect,updateTask)
-.delete(protect,deleteTask);
+    .get(protect, getTask)
+    .put(protect, updateTask)
+    .delete(protect, deleteTask);
 
-router.put("/:id/move", protect, moveTask);
+// =====================================
+// Move Task
+// =====================================
+
+router.put(
+    "/:id/move",
+    protect,
+    moveTask
+);
 
 module.exports = router;

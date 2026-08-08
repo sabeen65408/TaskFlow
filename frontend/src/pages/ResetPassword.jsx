@@ -1,34 +1,109 @@
 import { useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import {
+    useNavigate,
+    useLocation,
+    Link
+} from "react-router-dom";
+
 import toast from "react-hot-toast";
 
-import { resetPassword } from "../services/authService";
+import {
+    resetPassword
+} from "../services/authService";
 
 import "../styles/login.css";
 
 function ResetPassword() {
 
-    const { token } = useParams();
-
     const navigate = useNavigate();
 
-    const [password, setPassword] = useState("");
+    const location = useLocation();
 
-    const [confirmPassword, setConfirmPassword] = useState("");
+    // Email passed from ForgotPassword.jsx
+    const email =
+        location.state?.email;
 
-    const [loading, setLoading] = useState(false);
+
+    const [password, setPassword] =
+        useState("");
+
+    const [confirmPassword, setConfirmPassword] =
+        useState("");
+
+    const [loading, setLoading] =
+        useState(false);
+
+
+    // ==========================================
+    // Protect Page
+    // ==========================================
+
+    if (!email) {
+
+        return (
+
+            <div className="login-page">
+
+                <div className="login-card">
+
+                    <h1>
+                        ⚠️ Invalid Request
+                    </h1>
+
+                    <p>
+                        Please start the password
+                        reset process again.
+                    </p>
+
+                    <button
+                        onClick={() =>
+                            navigate(
+                                "/forgot-password"
+                            )
+                        }
+                    >
+                        Forgot Password
+                    </button>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
+
+
+    // ==========================================
+    // Reset Password
+    // ==========================================
 
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        if (!password || !confirmPassword) {
 
-            toast.error("Please fill all fields");
+        // ======================================
+        // Validate Fields
+        // ======================================
+
+        if (
+            !password ||
+            !confirmPassword
+        ) {
+
+            toast.error(
+                "Please fill all fields"
+            );
 
             return;
 
         }
+
+
+        // ======================================
+        // Validate Password Length
+        // ======================================
 
         if (password.length < 6) {
 
@@ -40,7 +115,14 @@ function ResetPassword() {
 
         }
 
-        if (password !== confirmPassword) {
+
+        // ======================================
+        // Confirm Password
+        // ======================================
+
+        if (
+            password !== confirmPassword
+        ) {
 
             toast.error(
                 "Passwords do not match"
@@ -50,16 +132,34 @@ function ResetPassword() {
 
         }
 
+
         try {
 
             setLoading(true);
 
-            const res = await resetPassword(
-                token,
-                password
+
+            // ==================================
+            // Reset Password
+            // ==================================
+
+            const res =
+                await resetPassword(
+
+                    email,
+
+                    password
+
+                );
+
+
+            toast.success(
+                res.message
             );
 
-            toast.success(res.message);
+
+            // ==================================
+            // Redirect to Login
+            // ==================================
 
             setTimeout(() => {
 
@@ -89,6 +189,11 @@ function ResetPassword() {
 
     };
 
+
+    // ==========================================
+    // UI
+    // ==========================================
+
     return (
 
         <div className="login-page">
@@ -96,18 +201,20 @@ function ResetPassword() {
             <div className="login-card">
 
                 <h1>
-
                     🔒 Reset Password
-
                 </h1>
 
+
                 <p>
-
                     Enter your new password.
-
                 </p>
 
-                <form onSubmit={handleSubmit}>
+
+                <form
+                    onSubmit={handleSubmit}
+                >
+
+                    {/* New Password */}
 
                     <input
 
@@ -117,15 +224,18 @@ function ResetPassword() {
 
                         value={password}
 
-                        onChange={(e)=>
-
-                            setPassword(e.target.value)
-
+                        onChange={(e) =>
+                            setPassword(
+                                e.target.value
+                            )
                         }
 
                         required
 
                     />
+
+
+                    {/* Confirm Password */}
 
                     <input
 
@@ -135,15 +245,18 @@ function ResetPassword() {
 
                         value={confirmPassword}
 
-                        onChange={(e)=>
-
-                            setConfirmPassword(e.target.value)
-
+                        onChange={(e) =>
+                            setConfirmPassword(
+                                e.target.value
+                            )
                         }
 
                         required
 
                     />
+
+
+                    {/* Submit */}
 
                     <button
 
@@ -153,19 +266,20 @@ function ResetPassword() {
 
                     >
 
-                        {
+                        {loading
 
-                            loading
+                            ? "Updating..."
 
-                                ? "Updating..."
-
-                                : "Reset Password"
+                            : "Reset Password"
 
                         }
 
                     </button>
 
                 </form>
+
+
+                {/* Login Link */}
 
                 <p className="bottom-text">
 
@@ -180,6 +294,7 @@ function ResetPassword() {
                     </Link>
 
                 </p>
+
 
             </div>
 

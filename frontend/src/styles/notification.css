@@ -1,0 +1,70 @@
+.notification-dropdown{
+
+    position:absolute;
+
+    top:42px;
+
+    right:0;
+
+    width:340px;
+
+    max-height:420px;
+
+    overflow-y:auto;
+
+    background:#fff;
+
+    border-radius:16px;
+
+    border:1px solid #e5e7eb;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.18);
+
+    z-index:99999;
+
+}
+@media(max-width:768px){
+
+.notification-dropdown{
+
+    position:fixed;
+
+    top:70px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:95vw;
+
+    max-width:360px;
+
+    right:auto;
+
+}
+
+}
+
+.notification-wrapper{
+
+    position:relative;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:flex-start;
+
+}
+
+.notification-item{
+
+    transition:.25s;
+
+}
+
+.notification-item:hover{
+
+    background:#f8fafc;
+
+}

@@ -10,6 +10,7 @@ function Comments({ taskId }) {
 
     const [comments, setComments] = useState([]);
     const [text, setText] = useState("");
+    const [sending, setSending] = useState(false);
 
     useEffect(() => {
 
@@ -35,29 +36,32 @@ function Comments({ taskId }) {
 
     const handleAdd = async () => {
 
-    if (!text.trim()) return;
+    if (!text.trim() || sending) return;
 
     try {
 
+        setSending(true);
+
         await addComment({
-
             task: taskId,
-
-            text
-
+            text,
         });
-
-        toast.success("Comment Added");
 
         setText("");
 
-        loadComments();
+        await loadComments();
 
-    }
+        toast.success("Comment Added");
 
-    catch (err) {
+    } catch (err) {
+
+        console.log(err);
 
         toast.error("Unable to add comment");
+
+    } finally {
+
+        setSending(false);
 
     }
 
@@ -228,31 +232,20 @@ outline:"none"
 />
 
 <button
-
-onClick={handleAdd}
-
-style={{
-
-background:"#4f46e5",
-
-color:"white",
-
-border:"none",
-
-padding:"0 22px",
-
-borderRadius:"10px",
-
-cursor:"pointer",
-
-fontWeight:"600"
-
-}}
-
+    onClick={handleAdd}
+    disabled={sending}
+    style={{
+        background: sending ? "#9ca3af" : "#4f46e5",
+        color: "white",
+        border: "none",
+        padding: "0 22px",
+        borderRadius: "10px",
+        cursor: sending ? "not-allowed" : "pointer",
+        fontWeight: "600",
+        opacity: sending ? 0.8 : 1,
+    }}
 >
-
-Send
-
+    {sending ? "Sending..." : "Send"}
 </button>
 
 </div>

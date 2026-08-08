@@ -101,7 +101,13 @@ function AttachmentSection({ taskId }) {
 
   return (
 
-<div>
+<div
+  style={{
+    marginTop: "35px",
+    borderTop: "1px solid #e5e7eb",
+    paddingTop: "25px",
+  }}
+>
 
 <h2
 style={{

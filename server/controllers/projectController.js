@@ -152,11 +152,54 @@ const getDashboardStats = async (req, res) => {
     const pendingTasks =
       tasks.length - completedTasks;
 
+    // Due Today
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+
+    tomorrow.setDate(today.getDate() + 1);
+
+    const dueToday = tasks.filter((task) => {
+
+      if (!task.dueDate) return false;
+
+      const due = new Date(task.dueDate);
+
+      return due >= today && due < tomorrow;
+
+    }).length;
+
+    // High Priority
+    const highPriority = tasks.filter(
+      (task) => task.priority === "High"
+    ).length;
+
+    // Completion %
+    const completion =
+      tasks.length === 0
+        ? 0
+        : Math.round(
+            (completedTasks / tasks.length) * 100
+          );
+
     res.json({
+
       totalProjects: projects.length,
+
       totalTasks: tasks.length,
+
       completedTasks,
+
       pendingTasks,
+
+      dueToday,
+
+      highPriority,
+
+      completion,
+
     });
 
   } catch (error) {
@@ -166,6 +209,7 @@ const getDashboardStats = async (req, res) => {
     });
 
   }
+
 };
 
 // ==============================

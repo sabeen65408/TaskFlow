@@ -15,6 +15,7 @@ function TaskCard({
   onEdit,
   onAttachment,
   onComment,
+  isAdmin = true,
 }) {
 
   const priorityColor = () => {
@@ -90,42 +91,45 @@ function TaskCard({
       </div>
 
       <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "18px",
-        }}
-      >
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "12px",
+    marginTop: "20px",
+  }}
+>
+  {isAdmin && (
+    <button
+      className="icon-btn"
+      onClick={() => onEdit(task)}
+    >
+      <FiEdit2 />
+    </button>
+  )}
 
-        <button
-          className="icon-btn"
-          onClick={() => onEdit(task)}
-        >
-          <FiEdit2 />
-        </button>
+  <button
+    className="icon-btn"
+    onClick={() => onAttachment(task)}
+  >
+    <FiPaperclip />
+  </button>
 
-        <button
-          className="icon-btn"
-          onClick={() => onAttachment(task)}
-        >
-          <FiPaperclip />
-        </button>
+  <button
+    className="icon-btn"
+    onClick={() => onComment(task)}
+  >
+    <FiMessageSquare />
+  </button>
 
-        <button
-          className="icon-btn"
-          onClick={() => onComment(task)}
-        >
-          <FiMessageSquare />
-        </button>
-
-        <button
-          className="icon-btn delete"
-          onClick={() => onDelete(task._id)}
-        >
-          <FiTrash2 />
-        </button>
-
-      </div>
+  {isAdmin && (
+    <button
+      className="icon-btn delete"
+      onClick={() => onDelete(task._id)}
+    >
+      <FiTrash2 />
+    </button>
+  )}
+</div>
 
     </div>
   );

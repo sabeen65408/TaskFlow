@@ -1,6 +1,9 @@
 const Attachment=require("../models/Attachment");
+const Task = require("../models/Task");
+const Activity = require("../models/Activity");
 const fs = require("fs");
 const path = require("path");
+const Notification = require("../models/Notification");
 
 const uploadAttachment = async (req, res) => {
 
@@ -19,17 +22,62 @@ const uploadAttachment = async (req, res) => {
 
         const attachment = await Attachment.create({
 
-            task: req.body.task,
+    task: req.body.task,
 
-            uploadedBy: req.user.id,
+    uploadedBy: req.user.id,
 
-            fileName: req.file.originalname,
+    fileName: req.file.originalname,
 
-            fileUrl: req.file.filename
+    fileUrl: req.file.filename
 
-        });
+});
 
-        res.status(201).json(attachment);
+const task = await Task.findById(req.body.task);
+
+await Activity.create({
+
+    project: task.project,
+
+    task: task._id,
+
+    user: req.user.id,
+
+    action: `uploaded ${req.file.originalname}`,
+
+});
+
+// Notify project owner/admin
+
+const populatedTask = await task.populate(
+    "project",
+    "owner"
+);
+
+if (
+    populatedTask.project &&
+    populatedTask.project.owner &&
+    populatedTask.project.owner.toString() !== req.user.id
+) {
+
+    await Notification.create({
+
+        user: populatedTask.project.owner,
+
+        sender: req.user.id,
+
+        task: task._id,
+
+        project: task.project,
+
+        type: "attachment",
+
+        message: `${req.user.name} uploaded "${req.file.originalname}" to "${task.title}".`
+
+    });
+
+}
+
+res.status(201).json(attachment);
 
     } catch (err) {
 

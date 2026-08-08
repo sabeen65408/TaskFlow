@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {
+    useParams,
+    useLocation,
+} from "react-router-dom";
 import toast from "react-hot-toast";
 
 import {
@@ -9,6 +12,7 @@ import {
 } from "@hello-pangea/dnd";
 
 import { FiPlus } from "react-icons/fi";
+import { FiX } from "react-icons/fi";
 
 import "../styles/project.css";
 import "../styles/modal.css";
@@ -35,6 +39,7 @@ import { getUsers } from "../services/userService";
 function Project() {
 
   const { id } = useParams();
+  const location = useLocation();
 
   const [board, setBoard] = useState(null);
   const [tasks, setTasks] = useState([]);
@@ -52,6 +57,7 @@ function Project() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [showAttachment, setShowAttachment] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [notificationType, setNotificationType] = useState("");
 
   const [search, setSearch] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("All");
@@ -60,6 +66,61 @@ function Project() {
   useEffect(() => {
     loadProject();
   }, [id]);
+
+  useEffect(() => {
+
+    if (
+        !location.state?.openTaskId ||
+        tasks.length === 0
+    ) {
+        return;
+    }
+
+    const task = tasks.find(
+        task =>
+            task._id ===
+            location.state.openTaskId
+    );
+
+    if (!task) return;
+
+    const type = location.state.notificationType;
+
+    if (
+        type === "comment"
+    ) {
+
+        setSelectedTask(task);
+
+        setShowComments(true);
+
+    }
+
+    else if (
+        type === "attachment"
+    ) {
+
+        setSelectedTask(task);
+
+        setShowAttachment(true);
+
+    }
+
+    else {
+
+        setEditingTask(task);
+
+        setShowModal(true);
+
+    }
+
+    window.history.replaceState(
+        {},
+        "",
+        window.location.pathname
+    );
+
+}, [tasks, location.state]);
 
   const loadProject = async () => {
     try {
@@ -306,27 +367,37 @@ function Project() {
 
   <div className="task-form-grid">
 
+  <div>
+
+    <label className="task-label">
+    Assigned User
+</label>
+
     <select
       className="task-input"
       value={assignedTo}
       onChange={(e) => setAssignedTo(e.target.value)}
     >
-      <option value="">
-        Assign User
-      </option>
+      <option value="">Assign User</option>
 
       {users.map((user) => (
-
         <option
           key={user._id}
           value={user._id}
         >
           {user.name}
         </option>
-
       ))}
 
     </select>
+
+  </div>
+
+  <div>
+
+    <label className="task-label">
+      Priority
+    </label>
 
     <select
       className="task-input"
@@ -338,6 +409,14 @@ function Project() {
       <option>High</option>
     </select>
 
+  </div>
+
+  <div>
+
+    <label className="task-label">
+    Due Date
+    </label>
+
     <input
       className="task-input"
       type="date"
@@ -346,6 +425,8 @@ function Project() {
     />
 
   </div>
+
+</div>
 
   <button
     className="create-task-btn"
@@ -521,13 +602,14 @@ function Project() {
       <div className="modal-content">
 
         <button
-          onClick={() => {
-            setShowComments(false);
-            setSelectedTask(null);
-          }}
-        >
-          Close
-        </button>
+  className="popup-close-btn"
+  onClick={() => {
+    setShowComments(false);
+    setSelectedTask(null);
+  }}
+>
+  <FiX />
+</button>
 
         <Comments
           taskId={selectedTask._id}
@@ -550,13 +632,14 @@ function Project() {
       <div className="modal-content">
 
         <button
-          onClick={() => {
-            setShowAttachment(false);
-            setSelectedTask(null);
-          }}
-        >
-          Close
-        </button>
+  className="popup-close-btn"
+  onClick={() => {
+    setShowAttachment(false);
+    setSelectedTask(null);
+  }}
+>
+  <FiX />
+</button>
 
         <AttachmentSection
           taskId={selectedTask._id}

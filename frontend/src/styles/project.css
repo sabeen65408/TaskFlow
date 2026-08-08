@@ -904,3 +904,15 @@ body{
     overflow-x:hidden;
 
 }
+
+.task-label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#374151;
+    font-size:15px;
+}
+
+body.dark .task-label{
+    color:#e5e7eb;
+}

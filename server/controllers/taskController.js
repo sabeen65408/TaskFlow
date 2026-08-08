@@ -21,17 +21,26 @@ const createTask = async (req, res) => {
         });
 
         // Notification
-        if (task.assignedTo) {
+        // Notification
+if (task.assignedTo) {
 
-            await Notification.create({
+    await Notification.create({
 
-                user: task.assignedTo,
+        user: task.assignedTo,
 
-                message: `You have been assigned a new task: ${task.title}`
+        sender: req.user._id,
 
-            });
+        task: task._id,
 
-        }
+        project: task.project,
+
+        type: "task_assigned",
+
+        message: `You have been assigned a new task: "${task.title}"`
+
+    });
+
+}
 
         // Activity
 await Activity.create({
@@ -104,10 +113,8 @@ const getTask = async (req, res) => {
     try {
 
         const task = await Task.findById(req.params.id)
-
-            .populate("assignedTo", "name email")
-
-            .populate("project", "title");
+    .populate("assignedTo", "name email")
+    .populate("project", "title");
 
         if (!task) {
 
@@ -134,7 +141,6 @@ const getTask = async (req, res) => {
     }
 
 };
-
 // ==============================
 // Get All Tasks
 // ==============================
@@ -193,6 +199,27 @@ const updateTask = async (req, res) => {
         task.assignedTo = req.body.assignedTo || task.assignedTo;
 
         const updatedTask = await task.save();
+        // Notify assigned employee
+
+if (updatedTask.assignedTo) {
+
+    await Notification.create({
+
+        user: updatedTask.assignedTo,
+
+        sender: req.user._id,
+
+        task: updatedTask._id,
+
+        project: updatedTask.project,
+
+        type: "task_updated",
+
+        message: `Task "${updatedTask.title}" has been updated.`
+
+    });
+
+}
 
         await updatedTask.populate("assignedTo", "name email");
 
@@ -256,6 +283,25 @@ const deleteTask = async (req, res) => {
 
         });
 
+        if (task.assignedTo) {
+
+    await Notification.create({
+
+        user: task.assignedTo,
+
+        sender: req.user._id,
+
+        task: task._id,
+
+        project: task.project,
+
+        type: "general",
+
+        message: `Task "${task.title}" has been deleted.`
+
+    });
+
+}
         await task.deleteOne();
 
         res.json({
@@ -301,6 +347,27 @@ const moveTask = async (req, res) => {
         task.column = req.body.column;
 
         await task.save();
+        // Notify assigned employee
+
+if (task.assignedTo) {
+
+    await Notification.create({
+
+        user: task.assignedTo,
+
+        sender: req.user._id,
+
+        task: task._id,
+
+        project: task.project,
+
+        type: "task_moved",
+
+        message: `"${task.title}" moved to ${task.column}.`
+
+    });
+
+}
 
         await Activity.create({
 
@@ -339,11 +406,17 @@ const moveTask = async (req, res) => {
 module.exports = {
 
     createTask,
+
     getAllTasks,
+
     getTasksByProject,
+
     getTask,
+
     updateTask,
+
     deleteTask,
-    moveTask
+
+    moveTask,
 
 };

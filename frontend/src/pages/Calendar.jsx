@@ -1,80 +1,172 @@
 import { useEffect, useState } from "react";
 
 import { Calendar, momentLocalizer } from "react-big-calendar";
-
 import moment from "moment";
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { getCalendarTasks } from "../services/calendarService";
+import { getMyCalendarTasks } from "../services/employeeService";
+import { getTaskById } from "../services/taskService";
+
+import TaskDetailsDrawer from "../components/TaskDetailsDrawer";
+
+import "../styles/calendar.css";
 
 const localizer = momentLocalizer(moment);
 
 function CalendarPage() {
 
-  const [events, setEvents] = useState([]);
+    const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    loadCalendar();
-  }, []);
+    const [view, setView] = useState("month");
 
-  const loadCalendar = async () => {
+    const [date, setDate] = useState(new Date());
 
-    try {
+    const [selectedTask, setSelectedTask] = useState(null);
 
-      const tasks = await getCalendarTasks();
+    const [drawerOpen, setDrawerOpen] = useState(false);
 
-      const calendarEvents = tasks
-        .filter(task => task.dueDate)
-        .map(task => ({
-          title: task.title,
-          start: new Date(task.dueDate),
-          end: new Date(task.dueDate),
-          allDay: true,
-        }));
+    useEffect(() => {
 
-      setEvents(calendarEvents);
+        loadCalendar();
 
-    } catch (err) {
+    }, []);
 
-      console.log(err);
+    const loadCalendar = async () => {
 
-    }
+        try {
 
-  };
+            const role = localStorage.getItem("role");
 
-  return (
+            const tasks =
 
-    <div
-      style={{
-        background: "white",
-        padding: "25px",
-        borderRadius: "18px",
-        boxShadow: "0 10px 25px rgba(0,0,0,.08)"
-      }}
-    >
+                role === "employee"
 
-      <h2
-        style={{
-          marginBottom: 20
-        }}
-      >
-        📅 Task Calendar
-      </h2>
+                    ? await getMyCalendarTasks()
 
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{
-          height: 700
-        }}
-      />
+                    : await getCalendarTasks();
 
-    </div>
+            const calendarEvents = tasks
 
-  );
+                .filter(task => task.dueDate)
+
+                .map(task => ({
+
+                    id: task._id,
+
+                    title: task.title,
+
+                    start: new Date(task.dueDate),
+
+                    end: new Date(task.dueDate),
+
+                    allDay: true,
+
+                }));
+
+            setEvents(calendarEvents);
+
+        }
+
+        catch (err) {
+
+            console.log(err);
+
+        }
+
+    };
+
+    const handleSelectEvent = async (event) => {
+
+        try {
+
+            const task = await getTaskById(event.id);
+
+            setSelectedTask(task);
+
+            setDrawerOpen(true);
+
+        }
+
+        catch (err) {
+
+            console.log(err);
+
+        }
+
+    };
+
+    return (
+
+        <>
+
+            <div className="calendar-page">
+
+                <h2 className="calendar-title">
+
+                    📅 Task Calendar
+
+                </h2>
+
+                <Calendar
+
+                    localizer={localizer}
+
+                    events={events}
+
+                    startAccessor="start"
+
+                    endAccessor="end"
+
+                    view={view}
+
+                    onView={setView}
+
+                    date={date}
+
+                    onNavigate={setDate}
+
+                    views={[
+                        "month",
+                        "week",
+                        "day",
+                        "agenda",
+                    ]}
+
+                    popup
+
+                    selectable
+
+                    onSelectEvent={handleSelectEvent}
+
+                    style={{
+                        height: 720,
+                    }}
+
+                />
+
+            </div>
+
+            <TaskDetailsDrawer
+
+                show={drawerOpen}
+
+                task={selectedTask}
+
+                onClose={() => {
+
+                    setDrawerOpen(false);
+
+                    setSelectedTask(null);
+
+                }}
+
+            />
+
+        </>
+
+    );
 
 }
 

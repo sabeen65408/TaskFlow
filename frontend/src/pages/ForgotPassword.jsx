@@ -1,50 +1,83 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-import { forgotPassword } from "../services/authService";
+import {
+    forgotPassword,
+    verifyResetOtp
+} from "../services/authService";
 
 import "../styles/login.css";
 
 function ForgotPassword() {
 
-    const [email, setEmail] = useState("");
+    const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(false);
+    const [email, setEmail] =
+        useState("");
 
-    const handleSubmit = async (e) => {
+    const [otp, setOtp] =
+        useState("");
+
+    const [step, setStep] =
+        useState(1);
+
+    const [loading, setLoading] =
+        useState(false);
+
+
+    // ==========================================
+    // Send OTP
+    // ==========================================
+
+    const handleSendOtp = async (e) => {
 
         e.preventDefault();
 
         if (!email.trim()) {
 
-            toast.error("Please enter your email");
+            toast.error(
+                "Please enter your email address"
+            );
 
             return;
 
         }
 
+
         try {
 
             setLoading(true);
 
-            const res = await forgotPassword(email);
 
-            toast.success(res.message);
+            const res =
+                await forgotPassword(
+                    email.trim()
+                );
 
-            setEmail("");
 
-        } catch (err) {
+            toast.success(
+                res.message
+            );
+
+
+            setStep(2);
+
+        }
+
+        catch (err) {
 
             toast.error(
 
                 err.response?.data?.message ||
 
-                "Something went wrong"
+                "Unable to send OTP"
 
             );
 
-        } finally {
+        }
+
+        finally {
 
             setLoading(false);
 
@@ -52,69 +85,289 @@ function ForgotPassword() {
 
     };
 
+
+    // ==========================================
+    // Verify OTP
+    // ==========================================
+
+    const handleVerifyOtp = async (e) => {
+
+        e.preventDefault();
+
+
+        if (!otp.trim()) {
+
+            toast.error(
+                "Please enter the OTP"
+            );
+
+            return;
+
+        }
+
+
+        if (!/^\d{6}$/.test(otp)) {
+
+            toast.error(
+                "OTP must be 6 digits"
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            setLoading(true);
+
+
+            const res =
+                await verifyResetOtp(
+
+                    email.trim(),
+
+                    otp.trim()
+
+                );
+
+
+            toast.success(
+                res.message
+            );
+
+
+            // ==================================
+            // Move to Reset Password page
+            // ==================================
+
+            navigate(
+                "/reset-password",
+                {
+
+                    state: {
+                        email:
+                            email.trim()
+                    }
+
+                }
+            );
+
+        }
+
+        catch (err) {
+
+            toast.error(
+
+                err.response?.data?.message ||
+
+                "Invalid OTP"
+
+            );
+
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+
+    // ==========================================
+    // UI
+    // ==========================================
+
     return (
 
         <div className="login-page">
 
             <div className="login-card">
 
-                <h1>
 
-                    🔑 Forgot Password
+                {step === 1 ? (
 
-                </h1>
+                    <>
+                        <h1>
+                            🔑 Forgot Password
+                        </h1>
 
-                <p>
 
-                    Enter your registered email address.
+                        <p>
 
-                    <br />
+                            Enter your registered
+                            email address.
 
-                    We'll send you a password reset link.
+                            <br />
 
-                </p>
+                            We'll send you a
+                            verification OTP.
 
-                <form onSubmit={handleSubmit}>
+                        </p>
 
-                    <input
 
-                        type="email"
+                        <form
+                            onSubmit={
+                                handleSendOtp
+                            }
+                        >
 
-                        placeholder="Enter your email"
+                            <input
 
-                        value={email}
+                                type="email"
 
-                        onChange={(e) =>
+                                placeholder="Email Address"
 
-                            setEmail(e.target.value)
+                                value={email}
 
-                        }
+                                onChange={(e) =>
+                                    setEmail(
+                                        e.target.value
+                                    )
+                                }
 
-                        required
+                                required
 
-                    />
+                            />
 
-                    <button
 
-                        type="submit"
+                            <button
 
-                        disabled={loading}
+                                type="submit"
 
-                    >
+                                disabled={loading}
 
-                        {
+                            >
 
-                            loading
+                                {loading
 
-                                ? "Sending..."
+                                    ? "Sending OTP..."
 
-                                : "Send Reset Link"
+                                    : "Send OTP"
 
-                        }
+                                }
 
-                    </button>
+                            </button>
 
-                </form>
+                        </form>
+
+                    </>
+
+                ) : (
+
+                    <>
+                        <h1>
+                            🔐 Verify OTP
+                        </h1>
+
+
+                        <p>
+
+                            Enter the 6-digit OTP
+                            sent to your registered
+                            email address.
+
+                        </p>
+
+
+                        <form
+                            onSubmit={
+                                handleVerifyOtp
+                            }
+                        >
+
+                            <input
+
+                                type="text"
+
+                                inputMode="numeric"
+
+                                maxLength="6"
+
+                                placeholder="Enter 6-digit OTP"
+
+                                value={otp}
+
+                                onChange={(e) => {
+
+                                    const value =
+                                        e.target.value
+                                            .replace(
+                                                /\D/g,
+                                                ""
+                                            );
+
+                                    setOtp(value);
+
+                                }}
+
+                                required
+
+                            />
+
+
+                            <button
+
+                                type="submit"
+
+                                disabled={loading}
+
+                            >
+
+                                {loading
+
+                                    ? "Verifying..."
+
+                                    : "Verify OTP"
+
+                                }
+
+                            </button>
+
+                        </form>
+
+
+                        {/* Change Email */}
+
+                        <button
+
+                            type="button"
+
+                            onClick={() => {
+
+                                setStep(1);
+
+                                setOtp("");
+
+                            }}
+
+                            style={{
+                                marginTop: "12px",
+                                background:
+                                    "transparent",
+                                color:
+                                    "#4f46e5",
+                                border: "none",
+                                cursor:
+                                    "pointer",
+                                fontWeight:
+                                    "500"
+                            }}
+
+                        >
+
+                            Change Email
+
+                        </button>
+
+                    </>
+
+                )}
+
+
+                {/* Login */}
 
                 <p className="bottom-text">
 
@@ -122,13 +375,20 @@ function ForgotPassword() {
 
                     {" "}
 
-                    <Link to="/">
+                    <Link to="/"
+                    style={{
+                                color: "#4f46e5",
+                                textDecoration: "none",
+                                fontSize: "14px",
+                                fontWeight: "500",
+                            }}>
 
                         Login
 
                     </Link>
 
                 </p>
+
 
             </div>
 

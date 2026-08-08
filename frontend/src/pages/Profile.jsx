@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
 import {
+  FiArrowLeft,
   FiUser,
   FiMail,
-  FiSave,
-  FiFolder,
-  FiCheckSquare,
+  FiPhone,
+  FiCalendar,
+  FiShield,
+  FiEdit2,
+  FiLock,
 } from "react-icons/fi";
 
 import "../styles/profile.css";
@@ -14,20 +20,14 @@ import {
   updateProfile,
 } from "../services/profileService";
 
-import {
-  getDashboardStats,
-} from "../services/projectService";
+import EditProfileModal from "../components/EditProfileModal";
+import ChangePasswordModal from "../components/ChangePasswordModal";
 
 function Profile() {
-
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
-  const [stats, setStats] = useState({
-    totalProjects: 0,
-    totalTasks: 0,
-    completedTasks: 0,
-  });
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -37,17 +37,13 @@ function Profile() {
 
     try {
 
-      const user = await getProfile();
+      const profile = await getProfile();
 
-      setName(user.name);
-      setEmail(user.email);
+      setUser(profile);
 
-      const dashboardStats =
-        await getDashboardStats();
+    }
 
-      setStats(dashboardStats);
-
-    } catch (err) {
+    catch (err) {
 
       console.log(err);
 
@@ -55,159 +51,317 @@ function Profile() {
 
   };
 
-  const save = async () => {
+  const handleSave = async (data) => {
 
     try {
 
-      await updateProfile({ name });
+      const updatedUser = await updateProfile(data);
 
-      alert("Profile Updated Successfully");
+      localStorage.setItem(
+        "name",
+        updatedUser.name
+      );
 
-    } catch (err) {
+      window.dispatchEvent(
+        new Event("authChanged")
+      );
 
-      console.log(err);
+      setUser(updatedUser);
 
-      alert("Unable to update profile");
+      setShowModal(false);
+
+      toast.success(
+        "Profile updated successfully"
+      );
+
+    }
+
+    catch (err) {
+
+      toast.error(
+        "Unable to update profile"
+      );
 
     }
 
   };
+
+  if (!user) {
+
+    return (
+
+      <h2
+        style={{
+          textAlign: "center",
+          marginTop: "60px",
+        }}
+      >
+        Loading...
+      </h2>
+
+    );
+
+  }
 
   return (
 
     <div className="profile-page">
 
-      {/* ================= PROFILE CARD ================= */}
+      {/* Header */}
 
-      <div className="profile-card">
-
-        <div className="profile-header">
-
-          <div className="profile-avatar">
-
-            {name
-              ? name.charAt(0).toUpperCase()
-              : "U"}
-
-          </div>
-
-          <div className="profile-info">
-
-            <h1>{name}</h1>
-
-            <p>MERN Developer</p>
-
-          </div>
-
-        </div>
-
-        {/* ================= FORM ================= */}
-
-        <div className="profile-form">
-
-          <div className="profile-group">
-
-            <label>Name</label>
-
-            <div className="profile-input-box">
-
-              <FiUser />
-
-              <input
-                type="text"
-                value={name}
-                onChange={(e) =>
-                  setName(e.target.value)
-                }
-              />
-
-            </div>
-
-          </div>
-
-          <div className="profile-group">
-
-            <label>Email</label>
-
-            <div className="profile-input-box">
-
-              <FiMail />
-
-              <input
-                type="email"
-                value={email}
-                disabled
-              />
-
-            </div>
-
-          </div>
-
-        </div>
+      <div className="profile-page-header">
 
         <button
-          className="profile-btn"
-          onClick={save}
+          className="back-btn"
+          onClick={() => navigate(-1)}
+          type="button"
         >
 
-          <FiSave />
-
-          Save Changes
+          <FiArrowLeft />
 
         </button>
 
-      </div>
-
-      {/* ================= STATS ================= */}
-
-      <div className="profile-stats">
-
-        <div className="profile-stat-card">
-
-          <FiFolder
-            size={32}
-            color="#2563eb"
-          />
-
-          <h2>
-            {stats.totalProjects}
-          </h2>
-
-          <p>Projects</p>
-
-        </div>
-
-        <div className="profile-stat-card">
-
-          <FiCheckSquare
-            size={32}
-            color="#16a34a"
-          />
-
-          <h2>
-            {stats.totalTasks}
-          </h2>
-
-          <p>Tasks</p>
-
-        </div>
-
-        <div className="profile-stat-card">
-
-          <FiCheckSquare
-            size={32}
-            color="#7c3aed"
-          />
-
-          <h2>
-            {stats.completedTasks}
-          </h2>
-
-          <p>Completed</p>
-
-        </div>
+        <h1>My Profile</h1>
 
       </div>
+
+      {/* Hero */}
+
+      <div className="profile-hero">
+
+        <div className="hero-left">
+
+          <div className="hero-avatar">
+
+            {user.name.charAt(0).toUpperCase()}
+
+          </div>
+
+        </div>
+
+        <div className="hero-center">
+
+  <h2>{user.name}</h2>
+
+  <span className="hero-role">
+
+    <FiUser />
+
+    {user.role}
+
+  </span>
+
+  <p>
+
+    <FiMail />
+
+    {user.email}
+
+  </p>
+
+  <p>
+
+    <FiPhone />
+
+    {user.phone || "Phone not added"}
+
+  </p>
+
+  <p>
+
+    <FiCalendar />
+
+    Joined on{" "}
+
+    {new Date(
+      user.createdAt
+    ).toLocaleDateString()}
+
+  </p>
+
+</div>
+
+        <div className="hero-right">
+
+          <button
+            className="primary-btn"
+            type="button"
+            onClick={() => setShowModal(true)}
+          >
+
+            <FiEdit2 />
+
+            Edit Profile
+
+          </button>
+
+          <button
+            className="secondary-btn"
+            type="button"
+            onClick={() => setShowPasswordModal(true)}
+          >
+
+            <FiLock />
+
+            Change Password
+
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* Personal Information */}
+
+      <div className="profile-section">
+
+        <h2>
+
+          <FiUser />
+
+          Personal Information
+
+        </h2>
+
+        <div className="profile-grid">
+
+          <div>
+
+            <label>Full Name</label>
+
+            <input
+              value={user.name}
+              disabled
+            />
+
+          </div>
+
+          <div>
+
+            <label>Email</label>
+
+            <input
+              value={user.email}
+              disabled
+            />
+
+          </div>
+
+          <div>
+
+  <label>
+    Phone
+  </label>
+
+  <div className="profile-input-with-icon">
+
+    <input
+      value={user.phone || "Not Added"}
+      disabled
+    />
+
+  </div>
+
+</div>
+
+          <div>
+
+            <label>Role</label>
+
+            <input
+              value={user.role}
+              disabled
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Account */}
+
+      <div className="profile-section">
+
+        <h2>
+
+          <FiShield />
+
+          Account Details
+
+        </h2>
+
+        <div className="profile-grid">
+
+          <div>
+
+            <label>Joined Date</label>
+
+            <input
+              value={
+                new Date(
+                  user.createdAt
+                ).toLocaleDateString()
+              }
+              disabled
+            />
+
+          </div>
+
+          <div>
+
+            <label>Status</label>
+
+            <input
+              value="🟢 Active"
+              disabled
+            />
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Edit Profile Modal */}
+
+      {
+
+        showModal && (
+
+          <EditProfileModal
+
+            user={user}
+
+            onClose={() =>
+              setShowModal(false)
+            }
+
+            onSave={handleSave}
+
+          />
+
+        )
+
+      }
+
+      {/* Change Password Modal */}
+
+      {
+
+        showPasswordModal && (
+
+          <ChangePasswordModal
+
+            onClose={() =>
+              setShowPasswordModal(false)
+            }
+
+          />
+
+        )
+
+      }
 
     </div>
 

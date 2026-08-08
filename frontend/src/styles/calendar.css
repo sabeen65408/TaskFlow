@@ -1,0 +1,250 @@
+.calendar-page{
+    background:#fff;
+    border-radius:20px;
+    padding:30px;
+    margin:25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.calendar-title{
+    font-size:30px;
+    font-weight:700;
+    margin-bottom:24px;
+    color:#111827;
+}
+
+/* Toolbar */
+
+.rbc-toolbar{
+    margin-bottom:25px;
+}
+
+.rbc-toolbar button{
+
+    border:none !important;
+
+    background:#2563eb !important;
+
+    color:#fff !important;
+
+    border-radius:10px !important;
+
+    padding:9px 18px !important;
+
+    font-weight:600;
+
+    transition:.25s;
+}
+
+.rbc-toolbar button:hover{
+    background:#1d4ed8 !important;
+}
+
+.rbc-toolbar button.rbc-active{
+    background:#4f46e5 !important;
+}
+
+.rbc-toolbar-label{
+    font-size:24px;
+    font-weight:700;
+    color:#111827;
+}
+
+/* Calendar */
+
+.rbc-calendar{
+    border:none;
+    margin-top:20px;
+}
+
+.rbc-header{
+
+    padding:14px 0;
+
+    background:#f8fafc;
+
+    color:#374151;
+
+    font-weight:700;
+
+    border-bottom:1px solid #e5e7eb;
+}
+
+.rbc-month-view{
+
+    border-radius:16px;
+
+    overflow:hidden;
+
+    border:1px solid #e5e7eb;
+}
+
+.rbc-day-bg{
+    background:#fff;
+}
+
+.rbc-off-range-bg{
+    background:#f8fafc;
+}
+
+.rbc-today{
+    background:#eff6ff !important;
+}
+
+.rbc-date-cell{
+
+    padding:8px;
+
+    text-align:right;
+
+    font-weight:600;
+
+}
+
+.rbc-event{
+
+    background:#2563eb !important;
+
+    border:none !important;
+
+    border-radius:8px !important;
+
+    padding:3px 8px !important;
+
+    font-size:12px !important;
+
+    font-weight:600;
+}
+
+.rbc-event:hover{
+    background:#1d4ed8 !important;
+}
+
+.rbc-show-more{
+    color:#2563eb !important;
+}
+
+/* Week & Day */
+
+.rbc-time-view{
+    border-radius:16px;
+    overflow:hidden;
+}
+
+.rbc-time-header{
+    background:#f8fafc;
+}
+
+/* Dark Mode */
+
+body.dark .calendar-page{
+
+    background:var(--card);
+
+}
+
+body.dark .calendar-title{
+
+    color:var(--text);
+
+}
+
+body.dark .rbc-header{
+
+    background:var(--input);
+
+    color:var(--text);
+
+}
+
+body.dark .rbc-month-view{
+
+    border-color:var(--border);
+
+}
+
+body.dark .rbc-day-bg{
+
+    background:var(--card);
+
+}
+
+body.dark .rbc-off-range-bg{
+
+    background:#111827;
+
+}
+
+body.dark .rbc-date-cell{
+
+    color:var(--text);
+
+}
+
+body.dark .rbc-today{
+
+    background:#1e3a8a55 !important;
+
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.calendar-page{
+    padding:18px;
+}
+
+.calendar-title{
+    font-size:24px;
+}
+
+.rbc-toolbar{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.rbc-toolbar-label{
+    order:-1;
+}
+
+}
+
+/* ===========================
+   Calendar Status Badge
+=========================== */
+
+.calendar-status{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+.calendar-status.todo{
+    color:#64748b;
+}
+
+.calendar-status.in-progress{
+    color:#2563eb;
+}
+
+.calendar-status.review{
+    color:#d97706;
+}
+
+.calendar-status.done{
+    color:#16a34a;
+}

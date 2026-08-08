@@ -1,13 +1,12 @@
 import { useState } from "react";
 import { loginUser } from "../services/authService";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "../styles/login.css";
 import toast from "react-hot-toast";
 
 function Login() {
 
-    const [email, setEmail] = useState("");
+    const [emailOrPhone, setEmailOrPhone] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
@@ -19,91 +18,137 @@ function Login() {
         try {
 
             const data = await loginUser({
-                email,
-                password
+                emailOrPhone,
+                password,
             });
 
             console.log("Login Response:", data);
 
-            localStorage.setItem("token", data.token);
-            window.dispatchEvent(new Event("authChanged"));
+            localStorage.setItem(
+                "token",
+                data.token
+            );
 
-toast.success("Login Successful 🎉");
+            localStorage.setItem(
+                "role",
+                data.role
+            );
 
-navigate("/dashboard", { replace: true });
+            localStorage.setItem(
+                "name",
+                data.name
+            );
+
+            window.dispatchEvent(
+                new Event("authChanged")
+            );
+
+            toast.success(
+                "Login Successful 🎉"
+            );
+
+            if (data.role === "admin") {
+
+                navigate("/dashboard", {
+                    replace: true,
+                });
+
+            } else {
+
+                navigate("/employee/dashboard", {
+                    replace: true,
+                });
+
+            }
 
         } catch (error) {
 
-            toast.error(error.response.data.message);
+            toast.error(
+                error.response?.data?.message ||
+                "Invalid Email/Phone or Password"
+            );
 
         }
 
     };
 
     return (
-  <div className="login-page">
 
-    <div className="login-card">
+        <div className="login-page">
 
-      <h1>🚀 TaskFlow</h1>
+            <div className="login-card">
 
-      <p>
-        Manage your work efficiently
-      </p>
+                <h1>
+                    🚀 TaskFlow
+                </h1>
 
-      <form onSubmit={handleLogin}>
+                <p>
+                    Manage your work efficiently
+                </p>
 
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e)=>setEmail(e.target.value)}
-        />
+                <form onSubmit={handleLogin}>
 
-        <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-        />
+                    {/* Email / Phone */}
 
-        <div
-  style={{
-    textAlign:"right",
-    marginBottom:"18px"
-  }}
->
-  <Link
-    to="/forgot-password"
-    style={{
-      color:"#4f46e5",
-      textDecoration:"none",
-      fontSize:"14px",
-      fontWeight:"500"
-    }}
-  >
-    Forgot Password?
-  </Link>
-</div>
+                    <input
+                        type="text"
+                        placeholder="Email or Phone Number"
+                        value={emailOrPhone}
+                        onChange={(e) =>
+                            setEmailOrPhone(e.target.value)
+                        }
+                        required
+                    />
 
-        <button>
-          Login
-        </button>
+                    {/* Password */}
 
-      </form>
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) =>
+                            setPassword(e.target.value)
+                        }
+                        required
+                    />
 
-      <p className="bottom-text">
-        Don't have an account?
+                    {/* Forgot Password */}
 
-        <Link to="/register">
-          Register
-        </Link>
-      </p>
+                    <div
+                        style={{
+                            textAlign: "right",
+                            marginBottom: "18px",
+                        }}
+                    >
 
-    </div>
+                        <Link
+                            to="/forgot-password"
+                            style={{
+                                color: "#4f46e5",
+                                textDecoration: "none",
+                                fontSize: "14px",
+                                fontWeight: "500",
+                            }}
+                        >
+                            Forgot Password?
+                        </Link>
 
-  </div>
-);
+                    </div>
+
+                    {/* Login Button */}
+
+                    <button type="submit">
+                        Login
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    );
 
 }
+
 export default Login;

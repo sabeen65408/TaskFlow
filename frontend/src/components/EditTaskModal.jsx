@@ -215,15 +215,21 @@ function EditTaskModal({
         {/* BUTTONS */}
 
         <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "12px",
-            marginTop: "25px",
-            borderTop: "1px solid #eee",
-            paddingTop: "20px",
-          }}
-        >
+    style={{
+      display: "flex",
+      justifyContent: "flex-end",
+      gap: "12px",
+      marginTop: "25px",
+      borderTop: "1px solid #eee",
+      paddingTop: "20px",
+
+      position: "sticky",
+      bottom: 0,
+      background: "#fff",
+      paddingBottom: "10px",
+      zIndex: 10,
+    }}
+  >
 
           <button
 
