@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
   FiX,
   FiUser,
@@ -7,6 +9,8 @@ import {
   FiUserCheck,
   FiSave,
   FiPlus,
+  FiBriefcase,
+  FiCalendar,
 } from "react-icons/fi";
 
 function EmployeeModal({
@@ -17,7 +21,31 @@ function EmployeeModal({
   handleSubmit,
   loading,
   onClose,
+  departments = [],
+  onCreateDepartment,
 }) {
+
+  const [newDepartmentName, setNewDepartmentName] = useState("");
+  const [addingDepartment, setAddingDepartment] = useState(false);
+
+  const handleAddDepartment = async () => {
+    const name = newDepartmentName.trim();
+
+    if (!name || !onCreateDepartment) return;
+
+    setAddingDepartment(true);
+
+    try {
+      const department = await onCreateDepartment(name);
+
+      if (department?._id) {
+        handleChange({ target: { name: "department", value: department._id } });
+        setNewDepartmentName("");
+      }
+    } finally {
+      setAddingDepartment(false);
+    }
+  };
 
   if (!show) return null;
 
@@ -153,6 +181,139 @@ function EmployeeModal({
           </div>
 
         )}
+
+        {/* Designation */}
+
+        <div className="employee-input-group">
+
+          <label>Designation</label>
+
+          <div className="employee-input-box">
+
+            <FiBriefcase />
+
+            <input
+              type="text"
+              name="designation"
+              placeholder="e.g., Senior Developer"
+              value={formData.designation || ""}
+              onChange={handleChange}
+            />
+
+          </div>
+
+        </div>
+
+        {/* Department */}
+
+        <div className="employee-input-group">
+
+          <div className="department-label-row">
+            <label>Department</label>
+            <span>Add one if it is not listed</span>
+          </div>
+
+          <div className="employee-input-box">
+
+            <FiBriefcase />
+
+            <select
+              name="department"
+              value={formData.department || ""}
+              onChange={handleChange}
+            >
+
+              <option value="">Select Department</option>
+
+              {departments.map((dept) => (
+
+                <option key={dept._id} value={dept._id}>
+
+                  {dept.name}
+
+                </option>
+
+              ))}
+
+            </select>
+
+          </div>
+
+          <div className="add-department-row">
+            <input
+              type="text"
+              aria-label="New department name"
+              placeholder="New department name"
+              value={newDepartmentName}
+              onChange={(event) => setNewDepartmentName(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  handleAddDepartment();
+                }
+              }}
+            />
+            <button
+              type="button"
+              onClick={handleAddDepartment}
+              disabled={!newDepartmentName.trim() || addingDepartment}
+            >
+              {addingDepartment ? "Adding..." : "Add"}
+            </button>
+          </div>
+
+        </div>
+
+        {/* Joining Date */}
+
+        <div className="employee-input-group">
+
+          <label>Joining Date</label>
+
+          <div className="employee-input-box">
+
+            <FiCalendar />
+
+            <input
+              type="date"
+              name="joiningDate"
+              value={formData.joiningDate ? formData.joiningDate.split('T')[0] : ""}
+              onChange={handleChange}
+            />
+
+          </div>
+
+        </div>
+
+        {/* Status */}
+
+        <div className="employee-input-group">
+
+          <label>Status</label>
+
+          <div className="employee-input-box">
+
+            <FiUserCheck />
+
+            <select
+              name="status"
+              value={formData.status || "Active"}
+              onChange={handleChange}
+            >
+
+              <option value="Active">Active</option>
+
+              <option value="Inactive">Inactive</option>
+
+              <option value="On Leave">On Leave</option>
+
+              <option value="Suspended">Suspended</option>
+
+            </select>
+
+          </div>
+
+        </div>
 
         {/* Role */}
 

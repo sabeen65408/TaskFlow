@@ -25,6 +25,11 @@ import {
   getEmployeeDetails,
 } from "../services/userService";
 
+import {
+  getDepartments,
+  createDepartment,
+} from "../services/departmentService";
+
 function Employees() {
 
   const [employees, setEmployees] = useState([]);
@@ -45,6 +50,8 @@ function Employees() {
 
   const [deleteLoading, setDeleteLoading] = useState(false);
 
+  const [departments, setDepartments] = useState([]);
+
   // ==========================================
   // Employee Form
   // ==========================================
@@ -55,6 +62,10 @@ function Employees() {
     phone: "",
     password: "",
     role: "employee",
+    department: "",
+    designation: "",
+    joiningDate: "",
+    status: "Active",
   });
 
   // ==========================================
@@ -63,6 +74,7 @@ function Employees() {
 
   useEffect(() => {
     loadEmployees();
+    loadDepartments();
   }, []);
 
   const loadEmployees = async () => {
@@ -81,6 +93,41 @@ function Employees() {
 
     }
 
+  };
+
+  const loadDepartments = async () => {
+
+    try {
+
+      const data = await getDepartments();
+
+      setDepartments(data);
+
+    } catch (err) {
+
+      console.log(err);
+
+      // Department loading is optional
+    }
+
+  };
+
+  const handleCreateDepartment = async (name) => {
+    try {
+      const department = await createDepartment({ name });
+
+      setDepartments((currentDepartments) =>
+        [...currentDepartments, department].sort((a, b) =>
+          a.name.localeCompare(b.name)
+        )
+      );
+      toast.success(`${department.name} department added`);
+
+      return department;
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Unable to add department");
+      return null;
+    }
   };
 
   // ==========================================
@@ -168,6 +215,10 @@ function Employees() {
       phone: employee.phone || "",
       password: "",
       role: employee.role || "employee",
+      department: employee.department?._id || employee.department || "",
+      designation: employee.designation || "",
+      joiningDate: employee.joiningDate ? new Date(employee.joiningDate).toISOString().split('T')[0] : "",
+      status: employee.status || "Active",
     });
 
     setShowModal(true);
@@ -230,6 +281,10 @@ function Employees() {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
+          department: formData.department || null,
+          designation: formData.designation,
+          joiningDate: formData.joiningDate,
+          status: formData.status,
         }
       );
 
@@ -245,6 +300,10 @@ function Employees() {
         phone: "",
         password: "",
         role: "employee",
+        department: "",
+        designation: "",
+        joiningDate: "",
+        status: "Active",
       });
 
       loadEmployees();
@@ -592,9 +651,15 @@ function Employees() {
 
                       <td>
 
-                        <span className="status-badge">
+                        <span
+                          className={`status-badge ${
+                            (employee.status || "Active")
+                              .toLowerCase()
+                              .replace(/\s+/g, "-")
+                          }`}
+                        >
 
-                          Active
+                          {employee.status || "Active"}
 
                         </span>
 
@@ -681,6 +746,10 @@ function Employees() {
 
           loading={loading}
 
+          departments={departments}
+
+          onCreateDepartment={handleCreateDepartment}
+
           onClose={() => {
 
             setShowModal(false);
@@ -693,6 +762,10 @@ function Employees() {
               phone: "",
               password: "",
               role: "employee",
+              department: "",
+              designation: "",
+              joiningDate: "",
+              status: "Active",
             });
 
           }}

@@ -27,6 +27,8 @@ const settingsRoutes = require("./routes/settingsRoutes");
 
 const employeeRoutes = require("./routes/employeeRoutes");
 
+const departmentRoutes = require("./routes/departmentRoutes");
+
 dotenv.config();
 connectDB();
 
@@ -50,6 +52,7 @@ app.use("/api/activities", activityRoutes);
 app.use("/api/team", teamRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/employee", employeeRoutes);
+app.use("/api/departments", departmentRoutes);
 
 app.get("/", (req, res) => {
     res.send("TaskFlow API Running");

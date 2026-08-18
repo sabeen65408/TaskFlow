@@ -32,7 +32,7 @@ const getEmployees = async (req, res) => {
     try {
         const employees = await User.find({
             role: "employee",
-        }).select("-password");
+        }).select("-password").populate("department", "name");
 
         res.json(employees);
     }
@@ -58,6 +58,10 @@ const createEmployee = async (req, res) => {
             email,
             phone,
             password,
+            department,
+            designation,
+            joiningDate,
+            status,
         } = req.body;
 
 
@@ -140,23 +144,44 @@ const createEmployee = async (req, res) => {
 
 
         // =====================================
+        // Create employee object
+        // =====================================
+
+        const employeeData = {
+            name: name.trim(),
+            email: normalizedEmail,
+            phone: normalizedPhone,
+            password: hashedPassword,
+            role: "employee",
+        };
+
+        // Add optional fields if provided
+        if (department) {
+            employeeData.department = department;
+        }
+
+        if (designation) {
+            employeeData.designation = designation.trim();
+        }
+
+        if (joiningDate) {
+            employeeData.joiningDate = new Date(joiningDate);
+        }
+
+        if (status && ["Active", "Inactive", "On Leave", "Suspended"].includes(status)) {
+            employeeData.status = status;
+        }
+
+
+        // =====================================
         // Create employee
         // =====================================
 
         const employee =
-            await User.create({
+            await User.create(employeeData);
 
-                name: name.trim(),
-
-                email: normalizedEmail,
-
-                phone: normalizedPhone,
-
-                password: hashedPassword,
-
-                role: "employee",
-
-            });
+        // Populate department if set
+        await employee.populate("department", "name");
 
 
         // =====================================
@@ -252,6 +277,10 @@ const updateEmployee = async (req, res) => {
             name,
             email,
             phone,
+            department,
+            designation,
+            joiningDate,
+            status,
         } = req.body;
 
 
@@ -351,8 +380,26 @@ const updateEmployee = async (req, res) => {
         employee.phone =
             normalizedPhone;
 
+        if (department !== undefined) {
+            employee.department = department || null;
+        }
+
+        if (designation !== undefined) {
+            employee.designation = designation ? designation.trim() : "";
+        }
+
+        if (joiningDate !== undefined) {
+            employee.joiningDate = new Date(joiningDate);
+        }
+
+        if (status && ["Active", "Inactive", "On Leave", "Suspended"].includes(status)) {
+            employee.status = status;
+        }
 
         await employee.save();
+
+        // Populate department if set
+        await employee.populate("department", "name");
 
 
         // =====================================
@@ -474,7 +521,8 @@ const getEmployeeDetails = async (req, res) => {
             await User.findById(
                 req.params.id
             )
-            .select("-password");
+            .select("-password")
+            .populate("department", "name");
 
 
         if (!employee) {

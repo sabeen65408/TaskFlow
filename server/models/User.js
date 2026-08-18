@@ -44,6 +44,33 @@ const userSchema = new mongoose.Schema(
         },
 
         // =================================
+        // Employee Information (V2)
+        // =================================
+
+        department: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Department",
+            default: null,
+        },
+
+        designation: {
+            type: String,
+            default: "",
+            trim: true,
+        },
+
+        joiningDate: {
+            type: Date,
+            default: Date.now,
+        },
+
+        status: {
+            type: String,
+            enum: ["Active", "Inactive", "On Leave", "Suspended"],
+            default: "Active",
+        },
+
+        // =================================
         // User Settings
         // =================================
 

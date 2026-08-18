@@ -739,6 +739,8 @@ background:#1d4ed8;
 
     width:100%;
     max-width:560px;
+    max-height:90vh;
+    overflow-y:auto;
 
     background:#fff;
 
@@ -758,6 +760,13 @@ background:#1d4ed8;
     align-items:flex-start;
 
     margin-bottom:30px;
+    padding-bottom:20px;
+    border-bottom:1px solid #e5e7eb;
+    
+    position:sticky;
+    top:0;
+    background:#fff;
+    z-index:10;
 }
 
 .employee-modal-header h2{
@@ -830,6 +839,13 @@ background:#1d4ed8;
     gap:15px;
 
     margin-top:35px;
+    padding-top:20px;
+    border-top:1px solid #e5e7eb;
+    
+    position:sticky;
+    bottom:0;
+    background:#fff;
+    z-index:10;
 }
 
 .modal-cancel-btn{
@@ -1960,4 +1976,67 @@ to{
 .project-status.done{
     background:#dcfce7;
     color:#15803d;
+}
+
+.status-badge.inactive{
+    background:#f3f4f6;
+    color:#4b5563;
+}
+
+.status-badge.on-leave{
+    background:#fef3c7;
+    color:#b45309;
+}
+
+.status-badge.suspended{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.department-label-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.department-label-row span{
+    color:#6b7280;
+    font-size:12px;
+}
+
+.add-department-row{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+}
+
+.add-department-row input{
+    min-width:0;
+    flex:1;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+    outline:none;
+}
+
+.add-department-row input:focus{
+    border-color:#4f46e5;
+    box-shadow:0 0 0 3px rgba(79,70,229,.10);
+}
+
+.add-department-row button{
+    border:none;
+    border-radius:10px;
+    padding:0 14px;
+    background:#4f46e5;
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.add-department-row button:disabled{
+    cursor:not-allowed;
+    opacity:.55;
 }
